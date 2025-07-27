@@ -50,18 +50,18 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pageNumbers = getPageNumbers();
 
   return (
-    <div className="flex justify-center items-center space-x-2 mt-12 mb-8">
+    <div className="flex justify-center items-center space-x-1 sm:space-x-2 mt-8 sm:mt-12 mb-6 sm:mb-8">
       {/* Botón Anterior */}
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`flex items-center justify-center w-10 h-10 rounded-soft transition-all duration-200 cursor-pointer ${
+        className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-soft transition-all duration-200 cursor-pointer ${
           currentPage === 1
             ? 'bg-gray-800/50 text-gray-500 cursor-not-allowed'
             : 'bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 text-gray-300 hover:bg-blue-500/20 hover:text-white hover:border-blue-500/50 hover-lift'
         }`}
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
@@ -70,7 +70,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       {pageNumbers.map((page, index) => (
         <div key={index}>
           {page === '...' ? (
-            <span className="flex items-center justify-center w-10 h-10 text-gray-400 text-sm font-medium">
+            <span className="flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 text-gray-400 text-xs sm:text-sm font-medium">
               ...
             </span>
           ) : (
@@ -78,13 +78,13 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
               onClick={() => onPageChange(page)}
               onMouseEnter={() => setHoveredPage(page)}
               onMouseLeave={() => setHoveredPage(null)}
-              className={`flex items-center justify-center w-10 h-10 rounded-soft transition-all duration-200 cursor-pointer ${
+              className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-soft transition-all duration-200 cursor-pointer ${
                 currentPage === page
                   ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft'
                   : 'bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 text-gray-300 hover:bg-blue-500/20 hover:text-white hover:border-blue-500/50 hover-lift'
               }`}
             >
-              <span className="text-sm font-semibold">{page}</span>
+              <span className="text-xs sm:text-sm font-semibold">{page}</span>
             </button>
           )}
         </div>
@@ -94,13 +94,13 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`flex items-center justify-center w-10 h-10 rounded-soft transition-all duration-200 cursor-pointer ${
+        className={`flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-soft transition-all duration-200 cursor-pointer ${
           currentPage === totalPages
             ? 'bg-gray-800/50 text-gray-500 cursor-not-allowed'
             : 'bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 text-gray-300 hover:bg-blue-500/20 hover:text-white hover:border-blue-500/50 hover-lift'
         }`}
       >
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
         </svg>
       </button>
