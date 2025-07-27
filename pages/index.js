@@ -264,16 +264,18 @@ export default function Home({ initialProducts, categories }) {
 
 export async function getServerSideProps() {
   try {
-    const { createClient } = require('@supabase/supabase-js');
+    const { supabase, isSupabaseConfigured } = require('../lib/supabase');
     
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error('Missing Supabase environment variables');
+    // Si Supabase no está configurado, devolver datos vacíos
+    if (!isSupabaseConfigured || !supabase) {
+      console.warn('Supabase not configured, returning empty data');
+      return {
+        props: {
+          initialProducts: [],
+          categories: ['All Products'],
+        },
+      };
     }
-    
-    const supabase = createClient(supabaseUrl, supabaseKey);
     
     // Obtener productos
     const { data: products, error: productsError } = await supabase
@@ -281,7 +283,26 @@ export async function getServerSideProps() {
       .select('*')
       .order('name');
     
-    if (productsError) throw productsError;
+    if (productsError) {
+      console.error('Error fetching products:', productsError);
+      return {
+        props: {
+          initialProducts: [],
+          categories: ['All Products'],
+        },
+      };
+    }
+    
+    // Verificar que products sea un array
+    if (!Array.isArray(products)) {
+      console.warn('Products is not an array');
+      return {
+        props: {
+          initialProducts: [],
+          categories: ['All Products'],
+        },
+      };
+    }
     
     // Obtener categorías únicas
     const { data: categoriesResult, error: categoriesError } = await supabase
@@ -290,15 +311,33 @@ export async function getServerSideProps() {
       .not('category', 'is', null)
       .neq('category', '');
     
-    if (categoriesError) throw categoriesError;
+    if (categoriesError) {
+      console.error('Error fetching categories:', categoriesError);
+      return {
+        props: {
+          initialProducts: [],
+          categories: ['All Products'],
+        },
+      };
+    }
     
     const uniqueCategories = [...new Set(categoriesResult.map(c => c.category))];
     const categories = ['All Products', ...uniqueCategories];
     
-    const productsWithParsedImages = products.map(p => ({
-        ...p,
-        imageUrls: JSON.parse(p.imageUrls || '[]')
-    }));
+    const productsWithParsedImages = products.map(p => {
+      try {
+        return {
+          ...p,
+          imageUrls: Array.isArray(p.imageUrls) ? p.imageUrls : JSON.parse(p.imageUrls || '[]')
+        };
+      } catch (error) {
+        console.error('Error parsing imageUrls for product:', p.id, error);
+        return {
+          ...p,
+          imageUrls: []
+        };
+      }
+    });
 
     return {
       props: {

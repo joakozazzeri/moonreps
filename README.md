@@ -1,40 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Moon Reps - Ecommerce Store
 
-## Getting Started
+Una tienda de comercio electrónico moderna construida con Next.js, con soporte para Supabase y diseño responsivo.
 
-First, run the development server:
+## 🚀 Despliegue en Vercel
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Configuración de Variables de Entorno
+
+Para que la aplicación funcione correctamente en Vercel, necesitas configurar las siguientes variables de entorno:
+
+1. Ve a tu proyecto en [Vercel Dashboard](https://vercel.com/dashboard)
+2. Navega a **Settings** > **Environment Variables**
+3. Agrega las siguientes variables:
+
+#### Variables Obligatorias (para Supabase):
+```
+NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
+NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_clave_anonima_de_supabase
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### Variables Opcionales (para autenticación admin):
+```
+ADMIN_USERNAME=tu_usuario_admin
+ADMIN_PASSWORD=tu_contraseña_admin
+ADMIN_NAME=Nombre del Administrador
+```
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+### Configuración de Supabase
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+1. Crea una cuenta en [Supabase](https://supabase.com)
+2. Crea un nuevo proyecto
+3. Ve a **Settings** > **API** para obtener tu URL y clave anónima
+4. Crea una tabla `products` con la siguiente estructura:
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+```sql
+CREATE TABLE products (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  category TEXT,
+  brand TEXT,
+  buyLink TEXT,
+  imageUrls JSONB DEFAULT '[]',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Solución de Errores Comunes
 
-## Learn More
+#### Error 500 en /api/products
+- Verifica que las variables de entorno de Supabase estén configuradas
+- Asegúrate de que la tabla `products` exista en tu base de datos
+- Revisa los logs de Vercel para más detalles
 
-To learn more about Next.js, take a look at the following resources:
+#### TypeError: t.map is not a function
+- Este error se soluciona automáticamente con las mejoras implementadas
+- La aplicación ahora maneja arrays vacíos correctamente
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+#### ReferenceError: Cannot access 'A' before initialization
+- Este error se debe a problemas de inicialización de módulos
+- Las mejoras implementadas previenen este error
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Desarrollo Local
 
-## Deploy on Vercel
+1. Clona el repositorio
+2. Instala las dependencias: `npm install`
+3. Copia `env.example` a `.env.local` y configura las variables
+4. Ejecuta el servidor de desarrollo: `npm run dev`
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 📱 Características
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+- ✅ Diseño completamente responsivo
+- ✅ Soporte para múltiples imágenes por producto
+- ✅ Filtrado por categorías
+- ✅ Búsqueda de productos
+- ✅ Paginación
+- ✅ Lightbox para imágenes
+- ✅ Panel de administración
+- ✅ Carga masiva de productos
+- ✅ Soporte para Supabase y SQLite
+
+## 🔧 Tecnologías
+
+- **Frontend**: Next.js, React, Tailwind CSS
+- **Backend**: Next.js API Routes
+- **Base de Datos**: Supabase (PostgreSQL) o SQLite
+- **Despliegue**: Vercel
+- **Imágenes**: Cloudinary (opcional)
+
+## 📞 Soporte
+
+Si encuentras algún problema, revisa los logs de Vercel y asegúrate de que todas las variables de entorno estén configuradas correctamente.

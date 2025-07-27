@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/router';
 
 export function useAuth() {
@@ -7,11 +7,7 @@ export function useAuth() {
   const [user, setUser] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
-
-  const checkAuth = async () => {
+  const checkAuth = useCallback(async () => {
     try {
       const token = localStorage.getItem('adminToken');
       const username = localStorage.getItem('adminUser');
@@ -48,15 +44,27 @@ export function useAuth() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const logout = () => {
-    localStorage.removeItem('adminToken');
-    localStorage.removeItem('adminUser');
-    setIsAuthenticated(false);
-    setUser(null);
-    router.push('/login');
-  };
+  const logout = useCallback(() => {
+    try {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
+      setIsAuthenticated(false);
+      setUser(null);
+      
+      // Usar window.location para forzar una navegación completa
+      window.location.href = '/login';
+    } catch (error) {
+      console.error('Error durante logout:', error);
+      // Fallback: redirigir directamente
+      window.location.href = '/login';
+    }
+  }, []);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   return {
     isAuthenticated,

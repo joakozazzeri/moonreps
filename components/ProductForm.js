@@ -1,5 +1,5 @@
 // components/ProductForm.js
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Image from 'next/image';
 import imageCompression from 'browser-image-compression';
 
@@ -16,7 +16,11 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
   const fileInputRef = useRef(null);
 
   const predefinedCategories = ["Zapatillas", "Remeras", "Pantalones", "Abrigos", "Accesorios"];
-  const allCategories = [...new Set([...predefinedCategories, ...existingCategories])];
+  
+  // Usar useMemo para evitar recrear allCategories en cada renderizado
+  const allCategories = useMemo(() => {
+    return [...new Set([...predefinedCategories, ...existingCategories])];
+  }, [existingCategories]);
 
   useEffect(() => {
     if (editingProduct) {
@@ -34,22 +38,16 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
         setCustomCategory(editingProduct.category || '');
       }
     } else {
-      resetForm();
+      // Reset form cuando editingProduct es null
+      setName('');
+      setPrice('');
+      setCategory('');
+      setCustomCategory('');
+      setBrand('');
+      setBuyLink('');
+      setImageUrls([]);
     }
-  }, [editingProduct, existingCategories, allCategories, resetForm]);
-
-  const resetForm = () => {
-    setName('');
-    setPrice('');
-    setCategory('');
-    setCustomCategory('');
-    setBrand('');
-    setBuyLink('');
-    setImageUrls([]);
-    if (setEditingProduct) {
-        setEditingProduct(null);
-    }
-  };
+  }, [editingProduct, allCategories]);
 
   const uploadImage = async (base64Image) => {
     try {
@@ -132,7 +130,17 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
         const updatedProduct = await res.json();
         const parsedProduct = { ...updatedProduct, price: parseFloat(updatedProduct.price), imageUrls: JSON.parse(updatedProduct.imageUrls || '[]') };
         onProductUpdated(parsedProduct);
-        resetForm();
+        // Reset form manually
+        setName('');
+        setPrice('');
+        setCategory('');
+        setCustomCategory('');
+        setBrand('');
+        setBuyLink('');
+        setImageUrls([]);
+        if (setEditingProduct) {
+          setEditingProduct(null);
+        }
       }
     } else {
       const res = await fetch('/api/products', {
@@ -144,7 +152,14 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
         const newProduct = await res.json();
         const parsedProduct = { ...newProduct, price: parseFloat(newProduct.price), imageUrls: JSON.parse(newProduct.imageUrls || '[]') };
         onProductAdded(parsedProduct);
-        resetForm();
+        // Reset form manually
+        setName('');
+        setPrice('');
+        setCategory('');
+        setCustomCategory('');
+        setBrand('');
+        setBuyLink('');
+        setImageUrls([]);
       }
     }
   };
@@ -231,7 +246,24 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
           {isUploading ? 'Esperando imágenes...' : (editingProduct ? 'Actualizar Producto' : 'Añadir Producto')}
         </button>
         {editingProduct && (
-          <button type="button" onClick={resetForm} className="ml-4 bg-gray-600 text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-500 font-semibold transition-colors">Cancelar</button>
+          <button 
+            type="button" 
+            onClick={() => {
+              setName('');
+              setPrice('');
+              setCategory('');
+              setCustomCategory('');
+              setBrand('');
+              setBuyLink('');
+              setImageUrls([]);
+              if (setEditingProduct) {
+                setEditingProduct(null);
+              }
+            }} 
+            className="ml-4 bg-gray-600 text-gray-200 px-4 py-2 rounded-lg hover:bg-gray-500 font-semibold transition-colors"
+          >
+            Cancelar
+          </button>
         )}
       </div>
     </form>

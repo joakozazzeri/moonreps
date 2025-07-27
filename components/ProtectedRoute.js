@@ -8,9 +8,10 @@ export default function ProtectedRoute({ children }) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.push('/login');
+      // Usar window.location para forzar una navegación completa
+      window.location.href = '/login';
     }
-  }, [isAuthenticated, isLoading, router]);
+  }, [isAuthenticated, isLoading]);
 
   if (isLoading) {
     return (
@@ -24,7 +25,14 @@ export default function ProtectedRoute({ children }) {
   }
 
   if (!isAuthenticated) {
-    return null; // No renderizar nada mientras redirige
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-light mx-auto mb-4"></div>
+          <p className="text-gray-400">Redirigiendo al login...</p>
+        </div>
+      </div>
+    );
   }
 
   return children;

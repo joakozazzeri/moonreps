@@ -27,7 +27,8 @@ export default function LoginForm() {
         // Guardar el token en localStorage
         localStorage.setItem('adminToken', data.token);
         localStorage.setItem('adminUser', data.username);
-        router.push('/admin');
+        // Usar window.location para forzar una navegación completa
+        window.location.href = '/admin';
       } else {
         const errorData = await response.json();
         setError(errorData.message || 'Credenciales incorrectas');
