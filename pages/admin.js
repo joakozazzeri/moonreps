@@ -4,8 +4,11 @@ import Head from 'next/head';
 import ProductForm from '../components/ProductForm';
 import AdminProductList from '../components/AdminProductList';
 import BulkUploader from '../components/BulkUploader';
+import ProtectedRoute from '../components/ProtectedRoute';
+import { useAuth } from '../hooks/useAuth';
 
 export default function Admin() {
+  const { user, logout } = useAuth();
   const [products, setProducts] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
   const [categories, setCategories] = useState([]); // Estado para las categorías
@@ -55,24 +58,39 @@ export default function Admin() {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen p-4 sm:p-6 lg:p-8 text-gray-100">
-      <Head>
-        <title>Moon Reps - Admin Dashboard</title>
-        <meta name="description" content="Panel de administración para Moon Reps" />
-      </Head>
-      <div className="container mx-auto spacing-modern">
-        <div className="flex justify-between items-center mb-10">
-            <div>
-              <h1 className="text-4xl font-bold text-white text-modern mb-3">Panel de Administración</h1>
-              <p className="text-gray-400 text-subtitle">Gestiona tus productos y catálogo</p>
-            </div>
-            <a href="/" className="text-sm text-blue-400 hover:text-blue-300 transition-colors link-improved flex items-center gap-2 icon-modern">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              Volver a la tienda
-            </a>
-        </div>
+    <ProtectedRoute>
+      <div className="bg-gray-900 min-h-screen p-4 sm:p-6 lg:p-8 text-gray-100">
+        <Head>
+          <title>Moon Reps - Admin Dashboard</title>
+          <meta name="description" content="Panel de administración para Moon Reps" />
+        </Head>
+        <div className="container mx-auto spacing-modern">
+          <div className="flex justify-between items-center mb-10">
+              <div>
+                <h1 className="text-4xl font-bold text-white text-modern mb-3">Panel de Administración</h1>
+                <p className="text-gray-400 text-subtitle">Gestiona tus productos y catálogo</p>
+                {user && (
+                  <p className="text-sm text-gray-500 mt-1">Conectado como: {user.username}</p>
+                )}
+              </div>
+              <div className="flex items-center gap-4">
+                <button
+                  onClick={logout}
+                  className="text-sm text-red-400 hover:text-red-300 transition-colors link-improved flex items-center gap-2 icon-modern"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Cerrar Sesión
+                </button>
+                <a href="/" className="text-sm text-blue-400 hover:text-blue-300 transition-colors link-improved flex items-center gap-2 icon-modern">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  Volver a la tienda
+                </a>
+              </div>
+          </div>
         
         <div className="mb-12">
             <BulkUploader />
@@ -113,7 +131,8 @@ export default function Admin() {
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   );
 }
