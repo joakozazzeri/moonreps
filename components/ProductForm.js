@@ -36,7 +36,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
     } else {
       resetForm();
     }
-  }, [editingProduct, existingCategories]);
+  }, [editingProduct, existingCategories, allCategories, resetForm]);
 
   const resetForm = () => {
     setName('');

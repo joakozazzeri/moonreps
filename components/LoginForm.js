@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 
 export default function LoginForm() {
@@ -117,12 +118,12 @@ export default function LoginForm() {
           </form>
           
           <div className="mt-6 text-center">
-            <a 
+            <Link 
               href="/" 
               className="text-sm text-blue-400 hover:text-blue-300 transition-colors link-improved"
             >
               ← Volver a la tienda
-            </a>
+            </Link>
           </div>
         </div>
       </div>

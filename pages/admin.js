@@ -1,6 +1,7 @@
 // pages/admin.js
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
+import Link from 'next/link';
 import ProductForm from '../components/ProductForm';
 import AdminProductList from '../components/AdminProductList';
 import BulkUploader from '../components/BulkUploader';
@@ -83,12 +84,12 @@ export default function Admin() {
                   </svg>
                   Cerrar Sesión
                 </button>
-                <a href="/" className="text-sm text-blue-400 hover:text-blue-300 transition-colors link-improved flex items-center gap-2 icon-modern">
+                <Link href="/" className="text-sm text-blue-400 hover:text-blue-300 transition-colors link-improved flex items-center gap-2 icon-modern">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                   </svg>
                   Volver a la tienda
-                </a>
+                </Link>
               </div>
           </div>
         
