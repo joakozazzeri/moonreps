@@ -1,10 +1,26 @@
 // components/CategoryFilter.js
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useMemo } from 'react';
 
-const CategoryFilter = ({ categories, selectedCategory, setSelectedCategory }) => {
+const CategoryFilter = ({ categories, selectedCategory, setSelectedCategory, products = [] }) => {
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+
+  // Calcular contadores de productos por categoría
+  const categoryCounts = useMemo(() => {
+    const counts = {};
+    
+    // Contar productos por categoría
+    products.forEach(product => {
+      const category = product.category || 'Sin categoría';
+      counts[category] = (counts[category] || 0) + 1;
+    });
+    
+    // Agregar "Todos los Productos" con el total
+    counts['Todos los Productos'] = products.length;
+    
+    return counts;
+  }, [products]);
 
   // Verificar si se puede hacer scroll en ambas direcciones
   const checkScrollButtons = () => {
@@ -72,27 +88,44 @@ const CategoryFilter = ({ categories, selectedCategory, setSelectedCategory }) =
           paddingRight: canScrollRight ? '1.5rem' : '0'
         }}
       >
-        {categories.map((category) => (
-          <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
-            className={`px-3 py-2 sm:px-6 sm:py-3 text-sm sm:text-md font-semibold rounded-soft whitespace-nowrap btn-modern hover-lift cursor-pointer flex-shrink-0 ${
-              selectedCategory === category
-                ? 'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-soft'
-                : 'bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 text-gray-300 hover:bg-blue-500/20 hover:text-white hover:border-blue-500/50'
-            }`}
-            style={{ transform: 'translateZ(0)' }}
-          >
-            <span className="flex items-center gap-1 sm:gap-2">
-              {selectedCategory === category && (
-                <svg className="w-3 h-3 sm:w-4 sm:h-4 icon-modern" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                </svg>
-              )}
-              {category}
-            </span>
-          </button>
-        ))}
+        {categories.map((category) => {
+          const count = categoryCounts[category] || 0;
+          return (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-4 py-3 sm:px-8 sm:py-4 text-base sm:text-lg font-bold rounded-modern whitespace-nowrap btn-modern hover-lift cursor-pointer flex-shrink-0 backdrop-blur-sm border transition-all duration-300 ${
+                selectedCategory === category
+                  ? 'bg-gradient-to-r from-brand-light/20 to-brand-light/30 text-white shadow-soft border-brand-light/40 shadow-brand-light/20'
+                  : 'bg-gray-800/40 backdrop-blur-md border-gray-600/30 text-gray-300 hover:bg-brand-light/10 hover:text-white hover:border-brand-light/30 hover:shadow-brand-light/10'
+              }`}
+              style={{ 
+                transform: 'translateZ(0)',
+                fontFamily: "'Inter', 'Segoe UI', 'Roboto', sans-serif",
+                fontWeight: '700',
+                letterSpacing: '0.025em'
+              }}
+            >
+              <span className="flex items-center gap-2 sm:gap-3">
+                {selectedCategory === category && (
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 icon-modern" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                )}
+                <span>{category}</span>
+                {count > 0 && (
+                  <span className={`px-3 py-1 text-sm font-bold rounded-full backdrop-blur-sm border transition-all duration-300 ${
+                    selectedCategory === category 
+                      ? 'bg-white/40 text-white border-white/50 shadow-white/30' 
+                      : 'bg-blue-500/30 text-blue-100 border-blue-400/40 shadow-blue-500/20'
+                  }`}>
+                    {count}
+                  </span>
+                )}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Botón de navegación derecha */}

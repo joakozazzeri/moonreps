@@ -55,14 +55,16 @@ const ProductCard = ({ product, onImageClick, priority = false }) => {
         )}
       </div>
       <div className="p-4 sm:p-6 flex flex-col flex-grow">
-        <h3 className="font-semibold truncate text-white text-modern text-base sm:text-lg mb-2 sm:mb-3">{product.name}</h3>
+        <h3 className="font-semibold text-white text-sm sm:text-base mb-2 sm:mb-3 leading-relaxed break-words">{product.name}</h3>
         <p className="text-blue-400 font-bold text-lg sm:text-xl mb-4 sm:mb-5">${product.price.toFixed(2)}</p>
         <div className="mt-auto">
           <a
-            href={`/admin?edit=${product.id}`}
+            href={product.buyLink || `/admin?edit=${product.id}`}
+            target={product.buyLink ? "_blank" : "_self"}
+            rel={product.buyLink ? "noopener noreferrer" : ""}
             className="block w-full text-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-soft text-sm font-semibold btn-modern hover:from-blue-600 hover:to-blue-700 transition-all duration-300 cursor-pointer"
           >
-            Comprar Ahora
+            {product.buyLink ? 'Comprar Ahora' : 'Editar Producto'}
           </a>
         </div>
       </div>

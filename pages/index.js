@@ -10,7 +10,7 @@ import Pagination from '../components/Pagination';
 export default function Home({ initialProducts, categories }) {
   const [products, setProducts] = useState(initialProducts);
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All Products');
+  const [selectedCategory, setSelectedCategory] = useState('Todos los Productos');
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 25;
 
@@ -32,7 +32,7 @@ export default function Home({ initialProducts, categories }) {
   useEffect(() => {
     let filtered = [...initialProducts];
 
-    if (selectedCategory !== 'All Products') {
+    if (selectedCategory !== 'Todos los Productos') {
       filtered = filtered.filter(p => p.category === selectedCategory);
     }
     if (searchTerm) {
@@ -58,7 +58,40 @@ export default function Home({ initialProducts, categories }) {
   };
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white" style={{ fontFamily: "'Poppins', sans-serif" }}>
+    <div className="bg-gray-900 min-h-screen text-white relative overflow-hidden" style={{ fontFamily: "'Poppins', sans-serif" }}>
+      {/* Diseño minimalista del fondo general */}
+      <div className="absolute inset-0 opacity-8">
+        {/* Patrón de puntos sutiles */}
+        <div className="absolute top-20 left-10 w-2 h-2 bg-blue-500/30 rounded-full"></div>
+        <div className="absolute top-40 right-20 w-1 h-1 bg-purple-500/40 rounded-full"></div>
+        <div className="absolute top-60 left-1/3 w-1.5 h-1.5 bg-blue-400/35 rounded-full"></div>
+        <div className="absolute top-80 right-1/4 w-1 h-1 bg-purple-400/30 rounded-full"></div>
+        <div className="absolute top-96 left-1/2 w-2 h-2 bg-blue-500/25 rounded-full"></div>
+        
+        <div className="absolute top-32 left-1/5 w-1 h-1 bg-purple-500/35 rounded-full"></div>
+        <div className="absolute top-48 right-1/3 w-1.5 h-1.5 bg-blue-400/30 rounded-full"></div>
+        <div className="absolute top-64 left-2/3 w-1 h-1 bg-purple-400/40 rounded-full"></div>
+        <div className="absolute top-80 right-1/2 w-2 h-2 bg-blue-500/20 rounded-full"></div>
+        
+        {/* Puntos adicionales para más densidad */}
+        <div className="absolute top-120 left-1/6 w-1 h-1 bg-blue-500/25 rounded-full"></div>
+        <div className="absolute top-140 right-1/5 w-1.5 h-1.5 bg-purple-500/30 rounded-full"></div>
+        <div className="absolute top-160 left-4/5 w-1 h-1 bg-blue-400/35 rounded-full"></div>
+        
+        {/* Líneas horizontales sutiles */}
+        <div className="absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/15 to-transparent"></div>
+        <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/15 to-transparent"></div>
+        <div className="absolute top-3/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/15 to-transparent"></div>
+        
+        {/* Líneas verticales sutiles */}
+        <div className="absolute top-0 bottom-0 left-1/4 w-px bg-gradient-to-b from-transparent via-blue-500/15 to-transparent"></div>
+        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-purple-500/15 to-transparent"></div>
+        <div className="absolute top-0 bottom-0 left-3/4 w-px bg-gradient-to-b from-transparent via-blue-400/15 to-transparent"></div>
+        
+        {/* Círculos grandes y difuminados para profundidad */}
+        <div className="absolute top-1/3 left-1/6 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-1/3 right-1/6 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl"></div>
+      </div>
       <Head>
         <title>Moon Reps - Spreadsheet</title>
         <meta name="description" content="Ecommerce store built with Next.js" />
@@ -153,7 +186,7 @@ export default function Home({ initialProducts, categories }) {
         <div className="mb-8 sm:mb-10 text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-modern mb-3">
             <span className="text-white">Bienvenido al Spreadsheet de </span>
-            <span className="text-blue-400">Moon Reps</span>
+            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(59,130,246,0.8)] drop-shadow-[0_0_4px_rgba(59,130,246,0.6)] drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]">Moon Reps</span>
           </h1>
           <p className="text-gray-400 text-subtitle text-sm sm:text-base">Encuentra los mejores productos con calidad garantizada</p>
         </div>
@@ -162,6 +195,7 @@ export default function Home({ initialProducts, categories }) {
           categories={categories}
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
+          products={products}
         />
         
         <div className="my-6 sm:my-10">
@@ -272,7 +306,7 @@ export async function getServerSideProps() {
       return {
         props: {
           initialProducts: [],
-          categories: ['All Products'],
+          categories: ['Todos los Productos'],
         },
       };
     }
@@ -288,7 +322,7 @@ export async function getServerSideProps() {
       return {
         props: {
           initialProducts: [],
-          categories: ['All Products'],
+          categories: ['Todos los Productos'],
         },
       };
     }
@@ -299,7 +333,7 @@ export async function getServerSideProps() {
       return {
         props: {
           initialProducts: [],
-          categories: ['All Products'],
+          categories: ['Todos los Productos'],
         },
       };
     }
@@ -316,13 +350,13 @@ export async function getServerSideProps() {
       return {
         props: {
           initialProducts: [],
-          categories: ['All Products'],
+          categories: ['Todos los Productos'],
         },
       };
     }
     
     const uniqueCategories = [...new Set(categoriesResult.map(c => c.category))];
-    const categories = ['All Products', ...uniqueCategories];
+    const categories = ['Todos los Productos', ...uniqueCategories];
     
     const productsWithParsedImages = products.map(p => {
       try {
@@ -350,7 +384,7 @@ export async function getServerSideProps() {
     return {
       props: {
         initialProducts: [],
-        categories: ['All Products'],
+        categories: ['Todos los Productos'],
       },
     };
   }
