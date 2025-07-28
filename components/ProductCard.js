@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-const ProductCard = ({ product, onImageClick, priority = false }) => {
+const ProductCard = ({ product, priority = false }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const imageUrls = Array.isArray(product.imageUrls) && product.imageUrls.length > 0
     ? product.imageUrls
@@ -21,8 +21,7 @@ const ProductCard = ({ product, onImageClick, priority = false }) => {
   return (
     <div className="bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-modern overflow-hidden group card-modern hover-lift flex flex-col h-full">
       <div 
-        className="relative w-full h-48 sm:h-56 md:h-64 cursor-pointer overflow-hidden"
-        onClick={() => onImageClick(imageUrls, currentIndex)}
+        className="relative w-full h-48 sm:h-56 md:h-64 overflow-hidden"
       >
         <Image
           src={imageUrls[currentIndex]}

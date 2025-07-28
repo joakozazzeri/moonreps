@@ -220,7 +220,6 @@ export default function Home({ initialProducts, categories }) {
             <ProductCard 
               key={product.id} 
               product={product}
-              onImageClick={openLightbox}
               priority={index < 5}
             />
           ))}
