@@ -5,10 +5,13 @@ const BulkUploader = () => {
   const [file, setFile] = useState(null);
   const [message, setMessage] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [progress, setProgress] = useState('');
+  const [skipImages, setSkipImages] = useState(false);
   const fileInputRef = useRef(null);
 
   const handleFileChange = (e) => {
     setMessage('');
+    setProgress('');
     setFile(e.target.files[0]);
   };
 
@@ -18,7 +21,8 @@ const BulkUploader = () => {
       return;
     }
     setIsUploading(true);
-    setMessage('Uploading...');
+    setMessage('Procesando archivo CSV...');
+    setProgress('Iniciando carga masiva...');
 
     try {
       const csvData = await new Promise((resolve, reject) => {
@@ -34,21 +38,39 @@ const BulkUploader = () => {
         reader.readAsText(file);
       });
 
+      setProgress('Subiendo productos a la base de datos...');
+
+      const headers = {
+        'Content-Type': 'text/plain',
+        ...(skipImages && { 'x-skip-images': 'true' })
+      };
+
       const res = await fetch('/api/bulk-upload', {
         method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
+        headers,
         body: csvData,
       });
 
       const data = await res.json();
       if (res.ok) {
         setMessage(data.message);
+        setProgress(`Proceso completado: ${data.totalProcessed} de ${data.totalInCsv} productos procesados${data.imagesSkipped ? ' (sin imágenes)' : ''}`);
       } else {
-        setMessage(`Error: ${data.error}`);
+        if (data.error && data.error.includes('timeout')) {
+          setMessage('Error: La operación tardó demasiado tiempo. Intenta con menos productos o activa la opción "Saltar imágenes".');
+        } else {
+          setMessage(`Error: ${data.error}`);
+        }
+        setProgress('');
       }
     } catch (error) {
       console.error('Upload error:', error);
-      setMessage(`Error: ${error.message || 'An unexpected error occurred.'}`);
+      if (error.message.includes('timeout') || error.name === 'TimeoutError') {
+        setMessage('Error: La operación tardó demasiado tiempo. Intenta con menos productos o activa la opción "Saltar imágenes".');
+      } else {
+        setMessage(`Error: ${error.message || 'An unexpected error occurred.'}`);
+      }
+      setProgress('');
     } finally {
       setIsUploading(false);
       setFile(null);
@@ -80,13 +102,16 @@ const BulkUploader = () => {
 
   return (
     <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-white">Bulk Product Upload</h2>
+      <h2 className="text-2xl font-bold mb-4 text-white">Carga Masiva de Productos</h2>
       <p className="text-gray-400 mb-4">
-        Upload a CSV file to add multiple products at once. Separate image URLs with a pipe character (|).
+        Sube un archivo CSV para agregar múltiples productos a la vez. Separa las URLs de imágenes con el carácter pipe (|).
+        <br />
+        <span className="text-yellow-400 text-sm">Nota: Para archivos grandes, el proceso puede tardar hasta 60 segundos.</span>
       </p>
       
-      <div className="flex items-center space-x-4">
+      <div className="flex items-center space-x-4 mb-4">
         <input
+          ref={fileInputRef}
           type="file"
           accept=".csv,.xlsx,.xls"
           onChange={handleFileChange}
@@ -97,8 +122,20 @@ const BulkUploader = () => {
           disabled={!file || isUploading}
           className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-semibold transition-colors disabled:bg-gray-500 disabled:cursor-not-allowed"
         >
-          {isUploading ? 'Subiendo...' : 'Subir Archivo'}
+          {isUploading ? 'Procesando...' : 'Subir Archivo'}
         </button>
+      </div>
+
+      <div className="flex items-center space-x-4 mb-4">
+        <label className="flex items-center space-x-2 text-sm text-gray-300">
+          <input
+            type="checkbox"
+            checked={skipImages}
+            onChange={(e) => setSkipImages(e.target.checked)}
+            className="rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500"
+          />
+          <span>Saltar procesamiento de imágenes (más rápido)</span>
+        </label>
       </div>
 
       <div className="mt-4">
@@ -107,7 +144,19 @@ const BulkUploader = () => {
         </button>
       </div>
       
-      {message && <p className="mt-4 text-sm text-gray-300">{message}</p>}
+      {progress && (
+        <div className="mt-4 p-3 bg-blue-900 rounded-lg">
+          <p className="text-sm text-blue-200">{progress}</p>
+        </div>
+      )}
+      
+      {message && (
+        <div className={`mt-4 p-3 rounded-lg ${
+          message.includes('Error') ? 'bg-red-900 text-red-200' : 'bg-green-900 text-green-200'
+        }`}>
+          <p className="text-sm">{message}</p>
+        </div>
+      )}
     </div>
   );
 };
