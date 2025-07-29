@@ -55,13 +55,13 @@ const ProductCard = ({ product, priority = false }) => {
       </div>
       <div className="p-4 sm:p-6 flex flex-col flex-grow">
         <h3 className="font-semibold text-white text-sm sm:text-base mb-2 sm:mb-3 leading-relaxed break-words">{product.name}</h3>
-        <p className="text-blue-400 font-bold text-lg sm:text-xl mb-4 sm:mb-5">${product.price.toFixed(2)}</p>
+        <p className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent font-bold text-lg sm:text-xl mb-4 sm:mb-5">${product.price.toFixed(2)}</p>
         <div className="mt-auto">
           <a
             href={product.buyLink || `/admin?edit=${product.id}`}
             target={product.buyLink ? "_blank" : "_self"}
             rel={product.buyLink ? "noopener noreferrer" : ""}
-            className="block w-full text-center bg-gradient-to-r from-blue-500 to-blue-600 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-soft text-sm font-semibold btn-modern hover:from-blue-600 hover:to-blue-700 transition-all duration-300 cursor-pointer"
+            className="block w-full text-center bg-gradient-to-r from-blue-400/70 via-purple-500/70 to-blue-600/70 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-soft text-sm font-semibold btn-modern hover:from-blue-400/90 hover:via-purple-500/90 hover:to-blue-600/90 transition-all duration-300 cursor-pointer"
           >
             {product.buyLink ? 'Comprar Ahora' : 'Editar Producto'}
           </a>

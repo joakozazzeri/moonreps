@@ -133,6 +133,15 @@ export default function Admin() {
           </div>
         </div>
         </div>
+
+        {/* Footer */}
+        <footer className="text-center py-6 mt-12">
+          <p className="text-gray-400 text-sm">
+            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">© 2025 </span>
+            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">Moon Reps</span>
+            <span className="text-gray-400"> • Todos los derechos reservados</span>
+          </p>
+        </footer>
       </div>
     </ProtectedRoute>
   );

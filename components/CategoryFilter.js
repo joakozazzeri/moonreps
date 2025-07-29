@@ -1,26 +1,26 @@
 // components/CategoryFilter.js
 import { useRef, useState, useEffect, useMemo } from 'react';
 
-const CategoryFilter = ({ categories, selectedCategory, setSelectedCategory, products = [] }) => {
+const CategoryFilter = ({ categories, selectedCategory, setSelectedCategory, products = [], allProducts = [] }) => {
   const scrollContainerRef = useRef(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
 
-  // Calcular contadores de productos por categoría
+  // Calcular contadores de productos por categoría usando todos los productos
   const categoryCounts = useMemo(() => {
     const counts = {};
     
-    // Contar productos por categoría
-    products.forEach(product => {
+    // Contar productos por categoría usando allProducts (todos los productos)
+    allProducts.forEach(product => {
       const category = product.category || 'Sin categoría';
       counts[category] = (counts[category] || 0) + 1;
     });
     
-    // Agregar "Todos los Productos" con el total
-    counts['Todos los Productos'] = products.length;
+    // Agregar "Todos los Productos" con el total real
+    counts['Todos los Productos'] = allProducts.length;
     
     return counts;
-  }, [products]);
+  }, [allProducts]);
 
   // Verificar si se puede hacer scroll en ambas direcciones
   const checkScrollButtons = () => {
@@ -113,15 +113,13 @@ const CategoryFilter = ({ categories, selectedCategory, setSelectedCategory, pro
                   </svg>
                 )}
                 <span>{category}</span>
-                {count > 0 && (
-                  <span className={`px-3 py-1 text-sm font-bold rounded-full backdrop-blur-sm border transition-all duration-300 ${
-                    selectedCategory === category 
-                      ? 'bg-white/40 text-white border-white/50 shadow-white/30' 
-                      : 'bg-blue-500/30 text-blue-100 border-blue-400/40 shadow-blue-500/20'
-                  }`}>
-                    {count}
-                  </span>
-                )}
+                <span className={`px-3 py-1 text-sm font-bold rounded-full backdrop-blur-sm border transition-all duration-300 ${
+                  selectedCategory === category 
+                    ? 'bg-gradient-to-r from-blue-400/60 via-purple-500/60 to-blue-600/60 text-white border-white/30 shadow-white/20' 
+                    : 'bg-gradient-to-r from-blue-400/40 via-purple-500/40 to-blue-600/40 text-white border-blue-400/20 shadow-blue-500/10'
+                }`}>
+                  {count}
+                </span>
               </span>
             </button>
           );
