@@ -21,7 +21,7 @@ const ProductCard = ({ product, priority = false }) => {
   return (
     <div className="bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-modern overflow-hidden group card-modern hover-lift flex flex-col h-full">
       <div 
-        className="relative w-full h-48 sm:h-56 md:h-64 overflow-hidden"
+        className="relative w-full aspect-square overflow-hidden"
       >
         <Image
           src={imageUrls[currentIndex]}
