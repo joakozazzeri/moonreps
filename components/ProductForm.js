@@ -20,7 +20,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
   // Usar useMemo para evitar recrear allCategories en cada renderizado
   const allCategories = useMemo(() => {
     return [...new Set([...predefinedCategories, ...existingCategories])];
-  }, [existingCategories]);
+  }, [predefinedCategories, existingCategories]);
 
   useEffect(() => {
     if (editingProduct) {

@@ -2,9 +2,10 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
-import ProductCard from '../components/ProductCard';
-import SearchBar from '../components/SearchBar';
+import Link from 'next/link';
 import CategoryFilter from '../components/CategoryFilter';
+import SearchBar from '../components/SearchBar';
+import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
 import WelcomePopup from '../components/WelcomePopup';
 
@@ -153,12 +154,12 @@ export default function Home({ initialProducts, categories }) {
             </button>
 
             {/* Botón Vendedores */}
-            <a href="/vendedores" className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-soft text-gray-300 hover:text-white hover:bg-blue-500/20 hover:border-blue-500/50 transition-all duration-200 cursor-pointer ml-2">
+            <Link href="/vendedores" className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-soft text-gray-300 hover:text-white hover:bg-blue-500/20 hover:border-blue-500/50 transition-all duration-200 cursor-pointer ml-2">
               <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
               <span className="text-sm sm:text-base font-semibold hidden sm:inline">Vendedores</span>
-            </a>
+            </Link>
           </div>
         </nav>
       </header>
