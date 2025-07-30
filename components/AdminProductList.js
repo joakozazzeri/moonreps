@@ -31,6 +31,28 @@ const AdminProductList = ({ products, onEdit, onDelete, onClearAll }) => {
     }
   };
 
+  const handleExportCSV = async () => {
+    try {
+      const response = await fetch('/api/products/export-csv');
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `productos-moon-reps-${new Date().toISOString().split('T')[0]}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        alert('Error al exportar los productos. Inténtalo de nuevo.');
+      }
+    } catch (error) {
+      console.error('Error al exportar CSV:', error);
+      alert('Error al exportar los productos. Inténtalo de nuevo.');
+    }
+  };
+
   return (
     <div className="space-y-8">
         <div className="flex justify-between items-center">
@@ -43,15 +65,26 @@ const AdminProductList = ({ products, onEdit, onDelete, onClearAll }) => {
               )}
             </div>
             {products.length > 0 && (
-                <button
-                    onClick={handleDeleteAll}
-                    className="bg-gradient-to-r from-red-600 to-red-700 text-white px-5 py-2.5 rounded-soft text-sm font-semibold btn-modern hover:from-red-700 hover:to-red-800 flex items-center gap-2"
-                >
-                    <svg className="w-4 h-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                    Borrar Todo
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={handleExportCSV}
+                        className="bg-gradient-to-r from-green-600 to-green-700 text-white px-5 py-2.5 rounded-soft text-sm font-semibold btn-modern hover:from-green-700 hover:to-green-800 flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                        Exportar CSV
+                    </button>
+                    <button
+                        onClick={handleDeleteAll}
+                        className="bg-gradient-to-r from-red-600 to-red-700 text-white px-5 py-2.5 rounded-soft text-sm font-semibold btn-modern hover:from-red-700 hover:to-red-800 flex items-center gap-2"
+                    >
+                        <svg className="w-4 h-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                        Borrar Todo
+                    </button>
+                </div>
             )}
         </div>
         

@@ -96,6 +96,8 @@ export default async function handler(req, res) {
     const batchSize = 5; // Procesar 5 productos a la vez
     const totalProducts = products.length;
     const skipImages = req.headers['x-skip-images'] === 'true'; // Opción para saltar imágenes
+    const testMode = req.headers['x-test-mode'] === 'true'; // Modo de prueba
+    const testProducts = []; // Array para productos de prueba
 
     // Procesar productos en lotes
     for (let i = 0; i < totalProducts; i += batchSize) {
@@ -108,22 +110,51 @@ export default async function handler(req, res) {
           try {
             let imageUrlsJson = '[]';
             
-            if (!skipImages && product.imageUrls) {
-              const originalImageUrls = product.imageUrls.split('|').map(url => url.trim());
+            if (product.imageUrls) {
+              // Limpiar las URLs de corchetes y comillas si están presentes
+              let cleanImageUrls = product.imageUrls;
               
-              // Procesar imágenes de forma asíncrona
-              const cloudinaryUrls = await processImagesAsync(originalImageUrls);
-              imageUrlsJson = JSON.stringify(cloudinaryUrls);
+              // Remover corchetes del inicio y final si están presentes
+              if (cleanImageUrls.startsWith('[') && cleanImageUrls.endsWith(']')) {
+                cleanImageUrls = cleanImageUrls.slice(1, -1);
+              }
+              
+              // Remover comillas dobles si están presentes
+              cleanImageUrls = cleanImageUrls.replace(/"/g, '');
+              
+              if (skipImages) {
+                // Cuando se salta el procesamiento, usar las URLs directamente (asumiendo que ya son de Cloudinary)
+                const cloudinaryUrls = cleanImageUrls.split('|').map(url => url.trim()).filter(url => url);
+                imageUrlsJson = JSON.stringify(cloudinaryUrls);
+              } else {
+                // Procesar imágenes normalmente
+                const originalImageUrls = cleanImageUrls.split('|').map(url => url.trim()).filter(url => url);
+                
+                // Procesar imágenes de forma asíncrona
+                const cloudinaryUrls = await processImagesAsync(originalImageUrls);
+                imageUrlsJson = JSON.stringify(cloudinaryUrls);
+              }
             }
 
-            batchProducts.push({
+            const productData = {
               name: product.name,
               price: parseFloat(product.price),
               category: product.category,
               brand: product.brand || '',
               imageUrls: imageUrlsJson,
               buyLink: product.buyLink || ''
-            });
+            };
+
+            if (testMode) {
+              // En modo de prueba, agregar a la lista de productos de prueba con ID temporal
+              testProducts.push({
+                ...productData,
+                id: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}` // ID temporal
+              });
+            } else {
+              // En modo normal, agregar al lote para insertar
+              batchProducts.push(productData);
+            }
           } catch (error) {
             console.error(`Error processing product ${product.name}:`, error);
             // Continuar con el siguiente producto si hay error
@@ -131,12 +162,13 @@ export default async function handler(req, res) {
         }
       }
 
-      // Insertar el lote en la base de datos
-      if (batchProducts.length > 0) {
+      // Insertar el lote en la base de datos solo si no es modo de prueba
+      if (!testMode && batchProducts.length > 0) {
         try {
-          const { error } = await supabase
+          const { data: insertedProducts, error } = await supabase
             .from('products')
-            .insert(batchProducts);
+            .insert(batchProducts)
+            .select();
           
           if (error) {
             console.error('Database insert error:', error);
@@ -147,15 +179,28 @@ export default async function handler(req, res) {
           console.error('Failed to insert batch:', error);
           // Continuar con el siguiente lote
         }
+      } else if (testMode) {
+        // En modo de prueba, simular la inserción
+        productsAdded += batch.length; // Solo contar los productos del lote actual
       }
     }
 
-    res.status(200).json({ 
-      message: `${productsAdded} products processed and added successfully!`,
-      totalProcessed: productsAdded,
-      totalInCsv: totalProducts,
-      imagesSkipped: skipImages
-    });
+    if (testMode) {
+      res.status(200).json({ 
+        message: `Modo de prueba: ${productsAdded} productos procesados correctamente.`,
+        totalProcessed: productsAdded,
+        totalInCsv: totalProducts,
+        imagesSkipped: skipImages,
+        testProducts: testProducts // Devolver los productos de prueba para mostrar en la UI
+      });
+    } else {
+      res.status(200).json({ 
+        message: `${productsAdded} products processed and added successfully!`,
+        totalProcessed: productsAdded,
+        totalInCsv: totalProducts,
+        imagesSkipped: skipImages
+      });
+    }
 
   } catch (error) {
     console.error('Bulk upload failed:', error);
