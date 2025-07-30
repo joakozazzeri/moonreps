@@ -22,6 +22,20 @@ const CategoryFilter = ({ categories, selectedCategory, setSelectedCategory, pro
     return counts;
   }, [allProducts]);
 
+  // Ordenar categorías por cantidad de productos (mantener el orden de mayor a menor)
+  const sortedCategories = useMemo(() => {
+    return categories.sort((a, b) => {
+      // "Todos los Productos" siempre va primero
+      if (a === 'Todos los Productos') return -1;
+      if (b === 'Todos los Productos') return 1;
+      
+      // Ordenar por cantidad de productos (de mayor a menor)
+      const countA = categoryCounts[a] || 0;
+      const countB = categoryCounts[b] || 0;
+      return countB - countA;
+    });
+  }, [categories, categoryCounts]);
+
   // Verificar si se puede hacer scroll en ambas direcciones
   const checkScrollButtons = () => {
     if (scrollContainerRef.current) {
@@ -88,7 +102,7 @@ const CategoryFilter = ({ categories, selectedCategory, setSelectedCategory, pro
           paddingRight: canScrollRight ? '1.5rem' : '0'
         }}
       >
-        {categories.map((category) => {
+        {sortedCategories.map((category) => {
           const count = categoryCounts[category] || 0;
           return (
             <button

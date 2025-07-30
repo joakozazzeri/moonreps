@@ -385,8 +385,19 @@ export async function getServerSideProps() {
       };
     }
     
-    const uniqueCategories = [...new Set(categoriesResult.map(c => c.category))];
-    const categories = ['Todos los Productos', ...uniqueCategories];
+    // Calcular cantidad de productos por categoría
+    const categoryCounts = {};
+    products.forEach(product => {
+      if (product.category) {
+        categoryCounts[product.category] = (categoryCounts[product.category] || 0) + 1;
+      }
+    });
+
+    // Ordenar categorías por cantidad de productos (de mayor a menor)
+    const sortedCategories = Object.keys(categoryCounts)
+      .sort((a, b) => categoryCounts[b] - categoryCounts[a]);
+
+    const categories = ['Todos los Productos', ...sortedCategories];
     
     const productsWithParsedImages = products.map(p => {
       try {
