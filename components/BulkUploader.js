@@ -1,5 +1,6 @@
 // components/BulkUploader.js
 import { useState, useRef } from 'react';
+import Image from 'next/image';
 
 const BulkUploader = () => {
   const [file, setFile] = useState(null);
@@ -129,7 +130,7 @@ const BulkUploader = () => {
         <br />
         <span className="text-yellow-400 text-sm">Nota: Para archivos grandes, el proceso puede tardar hasta 60 segundos.</span>
         <br />
-        <span className="text-blue-400 text-sm">💡 Con "Saltar imágenes" activado, puedes usar URLs de Cloudinary directamente.</span>
+        <span className="text-blue-400 text-sm">💡 Con &quot;Saltar imágenes&quot; activado, puedes usar URLs de Cloudinary directamente.</span>
         <br />
         <span className="text-yellow-400 text-sm">🧪 Modo de prueba: Revisa productos antes de guardarlos definitivamente.</span>
       </p>
@@ -227,11 +228,14 @@ const BulkUploader = () => {
                     <p className="text-xs text-gray-400 mb-1">Imágenes ({JSON.parse(product.imageUrls).length}):</p>
                     <div className="flex gap-2 flex-wrap">
                       {JSON.parse(product.imageUrls).map((url, imgIndex) => (
-                        <img 
+                        <Image 
                           key={imgIndex} 
                           src={url} 
                           alt={`Imagen ${imgIndex + 1}`}
-                          className="w-12 h-12 object-cover rounded border border-gray-600"
+                          width={48}
+                          height={48}
+                          className="object-cover rounded border border-gray-600"
+                          unoptimized={true}
                         />
                       ))}
                     </div>

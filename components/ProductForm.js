@@ -15,12 +15,11 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
-  const predefinedCategories = ["Zapatillas", "Remeras", "Pantalones", "Abrigos", "Accesorios"];
-  
   // Usar useMemo para evitar recrear allCategories en cada renderizado
   const allCategories = useMemo(() => {
+    const predefinedCategories = ["Zapatillas", "Remeras", "Pantalones", "Abrigos", "Accesorios"];
     return [...new Set([...predefinedCategories, ...existingCategories])];
-  }, [predefinedCategories, existingCategories]);
+  }, [existingCategories]);
 
   useEffect(() => {
     if (editingProduct) {
