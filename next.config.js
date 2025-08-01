@@ -2,9 +2,6 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    loader: 'cloudinary',
-    path: 'https://res.cloudinary.com/damolfl3v/image/upload/',
-    // Reemplaza TU_CLOUD_NAME con el "cloud name" de tu cuenta de Cloudinary.
     remotePatterns: [
       {
         protocol: 'https',

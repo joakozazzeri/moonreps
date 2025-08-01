@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 const ProductCard = ({ product, priority = false }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  
   const imageUrls = Array.isArray(product.imageUrls) && product.imageUrls.length > 0
     ? product.imageUrls
     : ['https://placehold.co/400x400/002365/ffffff?text=No+Image'];
