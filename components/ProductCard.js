@@ -31,6 +31,8 @@ const ProductCard = ({ product, priority = false }) => {
           sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
           className="object-cover transition-all duration-500 group-hover:scale-105"
           priority={priority}
+          // Las imágenes de Cloudinary se sirven directamente desde res.cloudinary.com
+          // sin pasar por el optimizador de Vercel, ahorrando ancho de banda
         />
         {imageUrls.length > 1 && (
           <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-black/70 backdrop-blur-sm text-white text-xs font-semibold px-2 py-1 sm:px-3 sm:py-1.5 rounded-full border border-white/20">

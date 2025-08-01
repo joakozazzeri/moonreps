@@ -25,6 +25,12 @@ const nextConfig = {
     ],
     // Ya no necesitamos SVG, pero lo dejamos por si acaso
     dangerouslyAllowSVG: true, 
+    // Configuración para evitar que Vercel optimice imágenes de Cloudinary
+    unoptimized: false,
+    // Configurar loader personalizado para Cloudinary
+    loader: 'default',
+    // Configurar dominios que no deben ser optimizados
+    domains: ['res.cloudinary.com'],
   },
 }
 
