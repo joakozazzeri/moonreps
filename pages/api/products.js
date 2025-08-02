@@ -1,5 +1,6 @@
 // pages/api/products.js
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+const { getDiscordBot } = require('../../lib/discord-bot');
 
 // AÑADIDO: Aumentamos el límite del tamaño del cuerpo de la petición.
 export const config = {
@@ -83,6 +84,16 @@ export default async function handler(req, res) {
       }
       
       console.log('Product created successfully:', newProduct);
+      
+      // Enviar notificación a Discord
+      try {
+        const bot = getDiscordBot();
+        await bot.sendProductNotification(newProduct);
+      } catch (discordError) {
+        console.error('Error enviando notificación a Discord:', discordError);
+        // No fallamos la respuesta si Discord falla
+      }
+      
       res.status(201).json(newProduct);
     } catch (error) {
       console.error('POST Error:', error);

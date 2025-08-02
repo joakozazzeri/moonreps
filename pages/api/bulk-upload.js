@@ -2,6 +2,7 @@
 import Papa from 'papaparse';
 import { v2 as cloudinary } from 'cloudinary';
 import { supabase } from '../../lib/supabase';
+const { getDiscordBot } = require('../../lib/discord-bot');
 
 // Configuración de Cloudinary
 cloudinary.config({
@@ -174,6 +175,20 @@ export default async function handler(req, res) {
             console.error('Database insert error:', error);
             throw error;
           }
+          
+          // Enviar notificaciones de Discord para los productos insertados
+          try {
+            const bot = getDiscordBot();
+            for (const product of insertedProducts) {
+              await bot.sendProductNotification(product);
+              // Pequeña pausa entre notificaciones para evitar rate limits
+              await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+          } catch (discordError) {
+            console.error('Error enviando notificaciones a Discord:', discordError);
+            // No fallamos la respuesta si Discord falla
+          }
+          
           productsAdded += batchProducts.length;
         } catch (error) {
           console.error('Failed to insert batch:', error);
