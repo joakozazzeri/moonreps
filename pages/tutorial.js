@@ -121,7 +121,7 @@ export default function Tutorial() {
     },
     {
       id: 10,
-      title: "Paso 10: Declaración Correo Argentino",
+      title: "Paso 10: Declaración del Paquete (Argentina)",
       description: "Una vez ya tengamos nuestro código de seguimiento tenemos que hacer el aviso de compra en Correo Argentino, entraremos a Correo Argentino EPAGO y nos registraremos e iniciaremos sesión.",
       content: {
         link: "https://epago.correoargentino.com.ar/#/login"
@@ -408,6 +408,70 @@ export default function Tutorial() {
                 <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
                   {currentStepData.title}
                 </h2>
+                
+                {/* Información adicional para el paso 10 */}
+                {currentStep === 10 && (
+                  <div className="mb-6 p-4 bg-gray-700/50 border border-gray-600/50 rounded-lg">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                          <h3 className="text-green-400 font-bold text-lg">✅ Recomendaciones y límites:</h3>
+                        </div>
+                        <ul className="text-green-300 text-sm space-y-2">
+                          <li>• Traer como máximo 3 artículos de la misma especie por envío. (3 remeras, 3 pantalones, 3 zapatillas, etc.)</li>
+                          <li>• Valor máximo $3000 USD por pedido</li>
+                        </ul>
+                      </div>
+                      
+                      <div className="bg-red-500/20 border border-red-500/30 rounded-lg p-4">
+                        <div className="flex items-center gap-2 mb-2">
+                          <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 9a1 1 0 000 2h6a1 1 0 100-2H7z" clipRule="evenodd" />
+                          </svg>
+                          <h3 className="text-red-400 font-bold text-lg">❌ Lo que debes evitar:</h3>
+                        </div>
+                        <ul className="text-red-300 text-sm space-y-2">
+                          <li>• Variar mucho en talles (ej: talle 42 y 35)</li>
+                          <li>• Repetir modelos iguales en el mismo paquete</li>
+                        </ul>
+                      </div>
+                      
+                      <div className="bg-blue-500/20 border border-blue-500/30 rounded-lg p-4 md:col-span-2">
+                        <div className="flex items-center gap-2 mb-4">
+                          <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9zM7 4a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1z" clipRule="evenodd" />
+                          </svg>
+                          <h3 className="text-blue-400 font-bold text-lg">❓ Preguntas Frecuentes:</h3>
+                        </div>
+                        
+                        <div className="space-y-4">
+                          <div>
+                            <h4 className="text-blue-300 font-semibold mb-2">¿Cuándo no pago impuestos?</h4>
+                            <p className="text-blue-200 text-sm">En tus primeros 12 envíos del año, siempre que el valor del paquete sea de 50 USD o menos.</p>
+                          </div>
+                          
+                          <div>
+                            <h4 className="text-blue-300 font-semibold mb-2">¿Qué pasa si mi paquete vale más de 50 USD?</h4>
+                            <p className="text-blue-200 text-sm mb-3">Pagas un impuesto del 50%, pero únicamente sobre el monto que supera los 50 USD. Este impuesto se calcula siempre con el valor del dólar oficial.</p>
+                            
+                            <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-3">
+                              <h5 className="text-blue-300 font-semibold mb-2">Ejemplo práctico:</h5>
+                              <div className="text-blue-200 text-sm space-y-1">
+                                <p>• Tu paquete vale: <span className="font-semibold">90 USD</span></p>
+                                <p>• El monto libre de impuestos es: <span className="font-semibold">50 USD</span></p>
+                                <p>• La diferencia sobre la que pagas impuesto es: <span className="font-semibold">40 USD</span></p>
+                                <p>• Impuesto a pagar: El 50% de esos 40 USD, que serían <span className="font-semibold">20 USD</span> (pasados a pesos al dólar oficial).</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 
                 {/* Nota importante para el paso 7 */}
                 {currentStep === 7 && currentStepData.importantNote && (
