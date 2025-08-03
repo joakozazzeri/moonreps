@@ -421,7 +421,7 @@ export default function Tutorial() {
                 <p className="text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base">
                   {currentStep === 9 ? (
                     <>
-                      Puedes rastrear tu pedido desde la sección de "Warehouse/Almacén" o copiando el código de seguimiento en{' '}
+                      Puedes rastrear tu pedido desde la sección de &quot;Warehouse/Almacén&quot; o copiando el código de seguimiento en{' '}
                       <a 
                         href="https://www.17track.net/es"
                         target="_blank"
@@ -453,7 +453,7 @@ export default function Tutorial() {
                 {/* Texto adicional para el paso 10 - Arriba del grid */}
                 {currentStep === 10 && (
                   <p className="text-gray-300 mb-6">
-                    Luego veremos un apartado para introducir un código de seguimiento, aquí pegaremos el código que nos dieron en Kakobuy y clickearemos Buscar. Una vez hecho esto veremos nuestro envío listado abajo, ahora tan sólo queda esperar a que el estado se actualice y aparezca "Listo para Declarar".
+                    Luego veremos un apartado para introducir un código de seguimiento, aquí pegaremos el código que nos dieron en Kakobuy y clickearemos Buscar. Una vez hecho esto veremos nuestro envío listado abajo, ahora tan sólo queda esperar a que el estado se actualice y aparezca &quot;Listo para Declarar&quot;.
                   </p>
                 )}
 
@@ -483,7 +483,7 @@ export default function Tutorial() {
                     </div>
                     <div className="mt-4">
                       <p className="text-gray-300">
-                        Una vez tengamos todo listo, le damos a Presentación o Submit y realizamos el pago respectivo como lo hicimos en el Paso 4. Una vez pagado podremos ver nuestro paquete en el apartado de "Ensayo" o "Rehearsal". El proceso de embalaje tarda de 1-3 días.
+                        Una vez tengamos todo listo, le damos a Presentación o Submit y realizamos el pago respectivo como lo hicimos en el Paso 4. Una vez pagado podremos ver nuestro paquete en el apartado de &quot;Ensayo&quot; o &quot;Rehearsal&quot;. El proceso de embalaje tarda de 1-3 días.
                       </p>
                     </div>
                   </div>
@@ -642,7 +642,7 @@ export default function Tutorial() {
                       {/* Footer con información de contacto */}
                       <div className="mt-4 p-4 bg-gray-700/50 border border-gray-600/50 rounded-lg">
                         <p className="text-gray-300 text-sm text-center">
-                          Si tienes alguna pregunta durante este proceso, puedes contactar al servicio al cliente de Kakobuy a través de 'User Center' → 'Order' → 'Message'.
+                          Si tienes alguna pregunta durante este proceso, puedes contactar al servicio al cliente de Kakobuy a través de &apos;User Center&apos; → &apos;Order&apos; → &apos;Message&apos;.
                         </p>
                       </div>
                       
@@ -826,7 +826,7 @@ export default function Tutorial() {
                 {currentStep === 10 && (
                   <div className="mt-6">
                     <p className="text-gray-300">
-                      Una vez el paquete esté listo tocaremos "Declarar y pagar" y dentro del apartado tenemos que agregar TODOS los productos que hayamos comprado junto con el respectivo precio que hayamos pagado por cada uno. En la descripción de cada producto NUNCA pondremos marcas o detalles particulares, simplemente pondremos el tipo de prenda.
+                      Una vez el paquete esté listo tocaremos &quot;Declarar y pagar&quot; y dentro del apartado tenemos que agregar TODOS los productos que hayamos comprado junto con el respectivo precio que hayamos pagado por cada uno. En la descripción de cada producto NUNCA pondremos marcas o detalles particulares, simplemente pondremos el tipo de prenda.
                     </p>
                   </div>
                 )}
@@ -856,7 +856,7 @@ export default function Tutorial() {
                     </div>
                     <div className="mt-4 p-3 bg-orange-500/20 border border-orange-500/30 rounded-lg">
                       <p className="text-orange-300 text-sm text-center">
-                        Por ejemplo: si yo me compré un Short Denim Tears, en la descripción del producto a declarar pondré "Short". En precio pondremos el precio que aparece en Kakobuy como en la imagen.
+                        Por ejemplo: si yo me compré un Short Denim Tears, en la descripción del producto a declarar pondré &quot;Short&quot;. En precio pondremos el precio que aparece en Kakobuy como en la imagen.
                       </p>
                     </div>
                   </div>
@@ -909,7 +909,7 @@ export default function Tutorial() {
                 {currentStep === 8 && (
                   <div className="mt-6">
                     <p className="text-gray-300">
-                      Después de pagar el envío, tu estado será "Paid". ¡No te preocupes por el código de seguimiento todavía! Una vez que Kakobuy envíe tu paquete, el estado cambiará a "Shipped" y te darán el número de seguimiento.
+                      Después de pagar el envío, tu estado será &quot;Paid&quot;. ¡No te preocupes por el código de seguimiento todavía! Una vez que Kakobuy envíe tu paquete, el estado cambiará a &quot;Shipped&quot; y te darán el número de seguimiento.
                     </p>
                   </div>
                 )}
