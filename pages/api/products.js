@@ -20,10 +20,11 @@ export default async function handler(req, res) {
         return res.status(200).json([]);
       }
 
+      // Obtener productos ordenados por fecha de creación (más recientes primero)
       const { data: products, error } = await supabase
         .from('products')
         .select('*')
-        .order('name');
+        .order('created_at', { ascending: false });
       
       if (error) {
         console.error('Supabase error:', error);

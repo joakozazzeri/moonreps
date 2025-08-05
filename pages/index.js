@@ -349,11 +349,11 @@ export async function getServerSideProps() {
       };
     }
     
-    // Obtener productos
+    // Obtener productos ordenados por fecha de creación (más recientes primero)
     const { data: products, error: productsError } = await supabase
       .from('products')
       .select('*')
-      .order('name');
+      .order('created_at', { ascending: false });
     
     if (productsError) {
       console.error('Error fetching products:', productsError);
