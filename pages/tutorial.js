@@ -79,39 +79,16 @@ export default function Tutorial() {
     },
     {
       id: 7,
-      title: "Paso 7: Realizar \"rehearsal\" o \"ensayo de envío\"",
-      description: "Seleccionaremos todos los productos que queramos enviar en un mismo paquete haciendo click en la pestaña al costado de cada producto. Una vez seleccionados haremos click en \"Rehearsal packing\" o \"Envío de ensayo\".",
-      additionalInfo: "Una vez dentro del apartado de Rehearsal pondremos los datos de nuestra dirección de envío. Si en algún apartado les pide el TAX ID es el DNI. Tendremos para elegir estos extras opcionales para agregar a nuestro embalaje",
-      image: "https://i.imgur.com/usPa0xA.jpg",
-      importantNote: "IMPORTANTE PARA NO PAGAR COSTOS EXCESIVOS DE ENVÍO",
-      content: {
-        faq: [
-          {
-            question: "¿Qué es el \"rehearsal\" o \"envío de ensayo\"?",
-            answer: "Es pagar una pequeña tarifa para que Kakobuy arme tu paquete final antes de tiempo y te diga su peso y tamaño exactos."
-          },
-          {
-            question: "¿Y para qué me sirve eso?",
-            answer: "Para saber el precio real del envío y no llevarte sorpresas. Te permite comparar los costos de las diferentes paqueterías con los datos reales de tu paquete y elegir la más barata."
-          },
-          {
-            question: "¿Por qué importa tanto?",
-            answer: "Porque casi todas las empresas de envío cobran por el volumen del paquete. Con el rehearsal te enteras del costo real y evitas pagar de más por una caja muy grande."
-          }
-        ]
-      }
+      title: "Paso 7: Realizar envío internacional",
+      description: "Seleccionaremos todos los productos que queramos enviar en un mismo paquete haciendo click en la pestaña al costado de cada producto. Una vez seleccionados haremos click en \"Submit\" o \"Presentar\".",
+      additionalInfo: "Una vez dentro del apartado de Submit pondremos los datos de nuestra dirección de envío. Si en algún apartado les pide el TAX ID es el DNI. Tendremos para elegir estos extras opcionales para agregar a nuestro embalaje. Yo no suelo utilizar ninguna pero pueden usar \"corner protection\" para proteger más su paquete. Luego de eso tendremos que elegir la línea de envío (en Argentina solemos usar China Post SAL ya que es muy barato y tarda entre 15-25d).",
+      image: "https://i.imgur.com/gO6kp5B.jpg",
+      content: {}
     },
+
     {
       id: 8,
-      title: "Paso 8: Realizar envío internacional",
-      description: "Una vez esté embalado nuestro paquete podremos observar su respectivo peso. Le daremos click al botón que dice \"Información de la parcela\" y luego en \"Paquete\". Ahora solo tenemos que elegir nuestro método de envío y realizar el pago como en los pasos anteriores",
-      content: {
-        image: "https://i.imgur.com/Sx0bI6P.jpg"
-      }
-    },
-    {
-      id: 9,
-      title: "Paso 9: Seguimiento internacional",
+      title: "Paso 8: Seguimiento internacional",
       description: "Puedes rastrear tu pedido desde la sección de \"Warehouse\"/\"Almacén\" o copiando el código de seguimiento en 17TRACK.",
       descriptionWithLink: "Puedes rastrear tu pedido desde la sección de \"Warehouse\"/\"Almacén\" o copiando el código de seguimiento en 17TRACK.",
       trackingLink: "https://www.17track.net/es",
@@ -120,12 +97,18 @@ export default function Tutorial() {
       }
     },
     {
-      id: 10,
-      title: "Paso 10: Declaración del Paquete (Argentina)",
+      id: 9,
+      title: "Paso 9: Declaración del Paquete (Argentina)",
       description: "Una vez ya tengamos nuestro código de seguimiento tenemos que hacer el aviso de compra en Correo Argentino, entraremos a Correo Argentino EPAGO y nos registraremos e iniciaremos sesión.",
       content: {
         link: "https://epago.correoargentino.com.ar/#/login"
       }
+    },
+    {
+      id: 10,
+      title: "¡Fin del Tutorial!",
+      description: "¡Felicitaciones! Has completado el tutorial completo de Kakobuy. Ahora ya sabes cómo realizar tu primera compra desde China de forma segura y confiable.",
+      content: {}
     }
   ];
 
@@ -252,7 +235,7 @@ export default function Tutorial() {
               <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <span className="text-sm sm:text-base font-semibold hidden sm:inline">Productos</span>
+              <span className="text-xs sm:text-sm font-semibold">Productos</span>
             </Link>
 
             {/* Botón Vendedores */}
@@ -260,15 +243,15 @@ export default function Tutorial() {
               <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span className="text-sm sm:text-base font-semibold hidden sm:inline">Vendedores</span>
+              <span className="text-xs sm:text-sm font-semibold">Vendedores</span>
             </Link>
 
             {/* Botón Tutorial */}
-            <Link href="/tutorial" className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 bg-orange-500/40 backdrop-blur-sm border border-orange-500/70 rounded-soft text-white hover:bg-orange-500/50 hover:border-orange-500/90 transition-all duration-200 cursor-pointer ml-2">
+            <Link href="/tutorial" className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 bg-orange-500/60 backdrop-blur-sm border-2 border-orange-400/80 rounded-soft text-white shadow-lg shadow-orange-500/25 hover:bg-orange-500/70 hover:border-orange-400/90 hover:shadow-orange-500/40 transition-all duration-200 cursor-pointer ml-2">
               <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
-              <span className="text-sm sm:text-base font-semibold hidden sm:inline">Tutorial</span>
+              <span className="text-xs sm:text-sm font-semibold">Tutorial</span>
             </Link>
           </div>
         </nav>
@@ -409,8 +392,8 @@ export default function Tutorial() {
                   {currentStepData.title}
                 </h2>
                 
-                {/* Información adicional para el paso 10 */}
-                {currentStep === 10 && (
+                {/* Información adicional para el paso 9 */}
+                {currentStep === 9 && (
                   <div className="mb-6 p-4 bg-gray-700/50 border border-gray-600/50 rounded-lg">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="bg-green-500/20 border border-green-500/30 rounded-lg p-4">
@@ -472,18 +455,44 @@ export default function Tutorial() {
                     </div>
                   </div>
                 )}
-                
-                {/* Nota importante para el paso 7 */}
-                {currentStep === 7 && currentStepData.importantNote && (
-                  <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-orange-500/20 border border-orange-500/30 rounded-lg">
-                    <p className="text-orange-400 font-bold text-center text-sm sm:text-base">
-                      {currentStepData.importantNote}
+
+                {/* Información adicional para el paso 10 */}
+                {currentStep === 10 && (
+                  <div className="mb-6 p-6 bg-gradient-to-r from-purple-500/20 via-blue-500/20 to-purple-500/20 border border-purple-500/30 rounded-lg text-center">
+                    <div className="flex items-center justify-center mb-4">
+                      <svg className="w-12 h-12 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <h3 className="text-purple-300 font-bold text-xl mb-4">
+                      ¡Felicitaciones! 🎉
+                    </h3>
+                    <p className="text-purple-200 text-lg mb-6">
+                      Has completado el tutorial completo de Kakobuy. Ahora ya sabes cómo realizar tu primera compra desde China de forma segura y confiable.
                     </p>
+                    <p className="text-gray-300 text-base mb-6">
+                      Para cualquier consulta que tengas, únete a nuestro Discord para que podamos ayudarte con cualquier duda o problema que surja durante tu proceso de compra.
+                    </p>
+                    <div className="flex justify-center">
+                      <a 
+                        href="https://discord.gg/moonreps" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-600 border border-purple-500/30 text-white font-bold rounded-lg hover:from-purple-600 hover:via-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
+                      >
+                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+                        </svg>
+                        <span className="text-lg">¡Únete a nuestro Discord!</span>
+                      </a>
+                    </div>
                   </div>
                 )}
                 
+
+                
                 <p className="text-gray-300 mb-4 sm:mb-6 text-sm sm:text-base">
-                  {currentStep === 9 ? (
+                  {currentStep === 8 ? (
                     <>
                       Puedes rastrear tu pedido desde la sección de &quot;Warehouse/Almacén&quot; o copiando el código de seguimiento en{' '}
                       <a 
@@ -496,7 +505,7 @@ export default function Tutorial() {
                       </a>
                       .
                     </>
-                  ) : currentStep === 10 ? (
+                  ) : currentStep === 9 ? (
                     <>
                       Una vez ya tengamos nuestro código de seguimiento tenemos que hacer el aviso de compra en Correo Argentino, entraremos a{' '}
                       <a 
@@ -509,13 +518,15 @@ export default function Tutorial() {
                       </a>
                       {' '}y nos registraremos e iniciaremos sesión.
                     </>
+                  ) : currentStep === 10 ? (
+                    null
                   ) : (
                     currentStepData.description
                   )}
                 </p>
 
-                {/* Texto adicional para el paso 10 - Arriba del grid */}
-                {currentStep === 10 && (
+                {/* Texto adicional para el paso 9 - Arriba del grid */}
+                {currentStep === 9 && (
                   <p className="text-gray-300 mb-6">
                     Luego veremos un apartado para introducir un código de seguimiento, aquí pegaremos el código que nos dieron en Kakobuy y clickearemos Buscar. Una vez hecho esto veremos nuestro envío listado abajo, ahora tan sólo queda esperar a que el estado se actualice y aparezca &quot;Listo para Declarar&quot;.
                   </p>
@@ -528,67 +539,57 @@ export default function Tutorial() {
                 {/* Información adicional para el paso 7 */}
                 {currentStep === 7 && currentStepData.additionalInfo && (
                   <div className="mb-6">
-                    <p className="text-gray-300">
-                      {currentStepData.additionalInfo}
+                    <p className="text-gray-300 mb-4">
+                      Una vez dentro del apartado de Submit pondremos los datos de nuestra dirección de envío. Si en algún apartado les pide el TAX ID es el DNI. Tendremos para elegir estos extras opcionales para agregar a nuestro embalaje. Yo no suelo utilizar ninguna pero pueden usar "corner protection" para proteger más su paquete.
                     </p>
-                  </div>
-                )}
-
-                {/* Imagen para el paso 7 - Antes del contenedor del FAQ */}
-                {currentStep === 7 && currentStepData.image && (
-                  <div className="mb-6 space-y-4">
-                    <div className="relative">
-                      <img 
-                        src={currentStepData.image} 
-                        alt="Kakobuy Rehearsal Options" 
-                        className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                        onClick={() => openImageModal(currentStepData.image, "Kakobuy Rehearsal Options")}
-                      />
-                    </div>
-                    <div className="mt-4">
-                      <p className="text-gray-300">
-                        Una vez tengamos todo listo, le damos a Presentación o Submit y realizamos el pago respectivo como lo hicimos en el Paso 4. Una vez pagado podremos ver nuestro paquete en el apartado de &quot;Ensayo&quot; o &quot;Rehearsal&quot;. El proceso de embalaje tarda de 1-3 días.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Segunda imagen para el paso 7 */}
-                {currentStep === 7 && (
-                  <div className="mb-6 space-y-4">
-                    <div className="relative">
-                      <img 
-                        src="https://i.imgur.com/agV3Gc2.jpg" 
-                        alt="Kakobuy Rehearsal Process" 
-                        className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                        onClick={() => openImageModal("https://i.imgur.com/agV3Gc2.jpg", "Kakobuy Rehearsal Process")}
-                      />
-                    </div>
+                    <p className="text-gray-300">
+                      Luego de eso tendremos que elegir la línea de envío y realizar el pago como en el paso 4 (en Argentina solemos usar China Post SAL ya que es muy barato y tarda entre 15-25d).
+                    </p>
                   </div>
                 )}
 
                 {/* Área de contenido informativo */}
-                <div className="bg-gray-700/50 rounded-lg p-4 max-w-2xl mx-auto">
-                  {currentStepData.content.title && (
-                    <h3 className="text-lg font-semibold text-white mb-4">
-                      {currentStepData.content.title}
-                    </h3>
-                  )}
-                  {currentStepData.content.description && (
-                    <p className="text-gray-300 mb-4">
-                      {currentStepData.content.description}
-                    </p>
-                  )}
+                {currentStep !== 10 && (
+                  <div className="bg-gray-700/50 rounded-lg p-4 max-w-2xl mx-auto">
+                    {currentStepData.content.title && (
+                      <h3 className="text-lg font-semibold text-white mb-4">
+                        {currentStepData.content.title}
+                      </h3>
+                    )}
+                    {currentStepData.content.description && (
+                      <p className="text-gray-300 mb-4">
+                        {currentStepData.content.description}
+                      </p>
+                    )}
                   
+                  {/* Imagen para el paso 7 */}
+                  {currentStep === 7 && currentStepData.image && (
+                    <div className="space-y-4">
+                      <div className="relative">
+                        <img 
+                          src={currentStepData.image} 
+                          alt="Kakobuy International Shipping Options" 
+                          className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => openImageModal(currentStepData.image, "Kakobuy International Shipping Options")}
+                        />
+                      </div>
+                      <div className="text-center">
+                        <p className="text-orange-400 text-sm font-medium">
+                          💰 ANTES DE TOCAR SUBMIT Y PAGAR PODREMOS HACER USO DE LOS CUPONES DE DESCUENTO
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Imagen para el paso 8 */}
                   {currentStep === 8 && currentStepData.content.image && (
                     <div className="space-y-4">
                       <div className="relative">
                         <img 
                           src={currentStepData.content.image} 
-                          alt="Kakobuy International Shipping" 
+                          alt="Kakobuy Tracking" 
                           className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
-                          onClick={() => openImageModal(currentStepData.content.image, "Kakobuy International Shipping")}
+                          onClick={() => openImageModal(currentStepData.content.image, "Kakobuy Tracking")}
                         />
                       </div>
                     </div>
@@ -608,8 +609,8 @@ export default function Tutorial() {
                     </div>
                   )}
 
-                  {/* Imagen para el paso 10 */}
-                  {currentStep === 10 && (
+                  {/* Imagen para el paso 9 */}
+                  {currentStep === 9 && (
                     <div className="space-y-4">
                       <div className="relative max-w-md mx-auto">
                         <img 
@@ -800,33 +801,7 @@ export default function Tutorial() {
 
 
 
-                  {/* FAQ para el paso 7 */}
-                  {currentStep === 7 && currentStepData.content.faq && (
-                    <div className="space-y-4">
-                      <h4 className="text-lg font-semibold text-white mb-4 text-center">
-                        Preguntas Frecuentes sobre el Rehearsal
-                      </h4>
-                      <div className="space-y-4">
-                        {currentStepData.content.faq.map((item, index) => (
-                          <div key={index} className="bg-gray-700/50 border border-gray-600/50 rounded-lg p-4">
-                            <div className="flex items-start gap-3">
-                              <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <span className="text-white text-sm font-bold">{index + 1}</span>
-                              </div>
-                              <div className="flex-1">
-                                <h5 className="text-blue-400 font-semibold mb-2">
-                                  {item.question}
-                                </h5>
-                                <p className="text-gray-300 text-sm leading-relaxed">
-                                  {item.answer}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+
 
                   {/* Métodos de búsqueda para el paso 2 */}
                   {currentStep === 2 && currentStepData.content.searchMethods && (
@@ -885,9 +860,12 @@ export default function Tutorial() {
                     </div>
                   )}
                 </div>
+                )}
 
-                {/* Texto adicional para el paso 10 - Debajo del grid */}
-                {currentStep === 10 && (
+
+
+                {/* Texto adicional para el paso 9 - Debajo del grid */}
+                {currentStep === 9 && (
                   <div className="mt-6">
                     <p className="text-gray-300">
                       Una vez el paquete esté listo tocaremos &quot;Declarar y pagar&quot; y dentro del apartado tenemos que agregar TODOS los productos que hayamos comprado junto con el respectivo precio que hayamos pagado por cada uno. En la descripción de cada producto NUNCA pondremos marcas o detalles particulares, simplemente pondremos el tipo de prenda.
@@ -897,8 +875,8 @@ export default function Tutorial() {
 
 
 
-                {/* Grid de imágenes para el paso 10 */}
-                {currentStep === 10 && (
+                {/* Grid de imágenes para el paso 9 */}
+                {currentStep === 9 && (
                   <div className="mt-6 bg-gray-700/50 rounded-lg p-4 max-w-4xl mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="relative">
@@ -926,8 +904,8 @@ export default function Tutorial() {
                   </div>
                 )}
 
-                {/* Texto adicional para el paso 10 - Debajo del grid */}
-                {currentStep === 10 && (
+                {/* Texto adicional para el paso 9 - Debajo del grid */}
+                {currentStep === 9 && (
                   <div className="mt-6">
                     <p className="text-gray-300 mb-4">
                       Después de haber agregado todos nuestros productos tendremos que poner el costo de envío. Por más que hayamos pagado 200 USD de envío no pondremos ese número, yo siempre coloco 20 USD de valor de envío y nunca me retuvieron ningún paquete, a la Aduana lo que le importa es que declaremos bien el precio de los productos. Recomiendo utilizar 20 USD en shipping y no arriesgarse a poner menos.
@@ -946,8 +924,8 @@ export default function Tutorial() {
                   </div>
                 )}
 
-                {/* Imagen adicional para el paso 10 */}
-                {currentStep === 10 && (
+                {/* Imagen adicional para el paso 9 */}
+                {currentStep === 9 && (
                   <div className="mt-6 bg-gray-700/50 rounded-lg p-4 max-w-lg mx-auto">
                     <div className="relative">
                       <img 
@@ -960,8 +938,8 @@ export default function Tutorial() {
                   </div>
                 )}
 
-                {/* Texto final para el paso 10 */}
-                {currentStep === 10 && (
+                {/* Texto final para el paso 9 */}
+                {currentStep === 9 && (
                   <div className="mt-6">
                     <p className="text-gray-300">
                       Finalmente pagaremos la Declaración y tendremos que esperar. Dependiendo la opción que hayamos elegido recibiremos el paquete en nuestro hogar o nos darán un turno para ir a retirarlo en Aduana.
@@ -969,12 +947,22 @@ export default function Tutorial() {
                   </div>
                 )}
 
-                {/* Texto adicional para el paso 8 - Fuera del contenedor */}
-                {currentStep === 8 && (
+                {/* Texto adicional para el paso 7 - Fuera del contenedor */}
+                {currentStep === 7 && (
                   <div className="mt-6">
-                    <p className="text-gray-300">
+                    <p className="text-gray-300 mb-4">
                       Después de pagar el envío, tu estado será &quot;Paid&quot;. ¡No te preocupes por el código de seguimiento todavía! Una vez que Kakobuy envíe tu paquete, el estado cambiará a &quot;Shipped&quot; y te darán el número de seguimiento.
                     </p>
+                    <div className="bg-gray-700/50 rounded-lg p-4 max-w-2xl mx-auto">
+                      <div className="relative">
+                        <img 
+                          src="https://i.imgur.com/JBxPxy5.jpg" 
+                          alt="Kakobuy Shipping Status" 
+                          className="w-full h-auto rounded-lg cursor-pointer hover:opacity-90 transition-opacity"
+                          onClick={() => openImageModal("https://i.imgur.com/JBxPxy5.jpg", "Kakobuy Shipping Status")}
+                        />
+                      </div>
+                    </div>
                   </div>
                 )}
 
