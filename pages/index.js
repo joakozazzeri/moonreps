@@ -168,6 +168,8 @@ export default function Home({ initialProducts, categories }) {
               </svg>
               <span className="text-xs sm:text-sm font-semibold">Tutorial</span>
             </Link>
+
+
           </div>
         </nav>
       </header>

@@ -1,9 +1,11 @@
 // components/ProductCard.js
 import { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/router';
 
 const ProductCard = ({ product, priority = false }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const router = useRouter();
   
   const imageUrls = Array.isArray(product.imageUrls) && product.imageUrls.length > 0
     ? product.imageUrls
@@ -78,15 +80,42 @@ const ProductCard = ({ product, priority = false }) => {
       <div className="p-4 sm:p-6 flex flex-col flex-grow">
         <h3 className="font-semibold text-white text-sm sm:text-base mb-2 sm:mb-3 leading-relaxed break-words">{product.name}</h3>
         <p className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent font-bold text-lg sm:text-xl mb-4 sm:mb-5">${product.price.toFixed(2)}</p>
-        <div className="mt-auto">
+        <div className="mt-auto space-y-2">
           <a
             href={product.buyLink || `/admin?edit=${product.id}`}
             target={product.buyLink ? "_blank" : "_self"}
             rel={product.buyLink ? "noopener noreferrer" : ""}
-            className="block w-full text-center bg-gradient-to-r from-blue-400/70 via-purple-500/70 to-blue-600/70 text-white px-4 py-2.5 sm:px-6 sm:py-3 rounded-soft text-sm font-semibold btn-modern hover:from-blue-400/90 hover:via-purple-500/90 hover:to-blue-600/90 transition-all duration-300 cursor-pointer"
+            className="flex items-center justify-center gap-2 w-full text-center bg-gradient-to-r from-blue-400/70 via-purple-500/70 to-blue-600/70 text-white px-4 py-3.5 sm:px-6 sm:py-4 rounded-soft text-sm font-semibold btn-modern hover:from-blue-400/90 hover:via-purple-500/90 hover:to-blue-600/90 transition-all duration-300 cursor-pointer"
           >
+            {product.buyLink && (
+              <Image
+                src="/kakobuy-logo.png"
+                alt="Kakobuy Logo"
+                width={24}
+                height={24}
+                className="w-6 h-6 object-contain rounded-md"
+              />
+            )}
             {product.buyLink ? 'Comprar Ahora' : 'Editar Producto'}
           </a>
+          
+          {product.buyLink && (
+            <button
+              onClick={() => {
+                router.push(`/qc?url=${encodeURIComponent(product.buyLink)}`);
+              }}
+              className="flex items-center justify-center gap-2 w-full text-center bg-gradient-to-r from-green-500/70 via-green-600/70 to-green-700/70 text-white px-4 py-3.5 sm:px-6 sm:py-4 rounded-soft text-sm font-semibold btn-modern hover:from-green-500/90 hover:via-green-600/90 hover:to-green-700/90 transition-all duration-300 cursor-pointer"
+            >
+              <Image
+                src="/logo-uufinds.png"
+                alt="UUFinds Logo"
+                width={24}
+                height={24}
+                className="w-6 h-6 object-contain rounded-md"
+              />
+              Ver QC
+            </button>
+          )}
         </div>
       </div>
     </div>

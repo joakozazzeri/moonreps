@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 const WelcomePopup = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [hasShown, setHasShown] = useState(false);
 
   useEffect(() => {
@@ -14,6 +15,8 @@ const WelcomePopup = () => {
       // Mostrar el popup después de 1 segundo
       const timer = setTimeout(() => {
         setIsOpen(true);
+        // Pequeño delay para que la animación se vea mejor
+        setTimeout(() => setIsVisible(true), 100);
         setHasShown(true);
         sessionStorage.setItem('welcomePopupShown', 'true');
       }, 1000);
@@ -23,7 +26,9 @@ const WelcomePopup = () => {
   }, []);
 
   const closePopup = () => {
-    setIsOpen(false);
+    setIsVisible(false);
+    // Esperar a que termine la animación antes de ocultar completamente
+    setTimeout(() => setIsOpen(false), 300);
   };
 
   const handleKakobuyClick = () => {
@@ -37,8 +42,12 @@ const WelcomePopup = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 relative overflow-hidden">
+    <div className={`fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4 transition-all duration-300 ease-out ${
+      isVisible ? 'opacity-100' : 'opacity-0'
+    }`}>
+      <div className={`bg-gray-900 border border-gray-700 rounded-2xl p-6 sm:p-8 max-w-md w-full mx-4 relative overflow-hidden transition-all duration-300 ease-out transform ${
+        isVisible ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-4'
+      }`}>
         {/* Fondo decorativo */}
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-4 right-4 w-16 h-16 bg-blue-500/20 rounded-full blur-xl"></div>
@@ -58,7 +67,9 @@ const WelcomePopup = () => {
         {/* Contenido del popup */}
         <div className="relative z-10 text-center">
           {/* Logo */}
-          <div className="mb-6">
+          <div className={`mb-6 transition-all duration-500 ease-out delay-100 transform ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}>
             <Image 
               src="/logo.png" 
               alt="Moon Reps Logo" 
@@ -69,17 +80,23 @@ const WelcomePopup = () => {
           </div>
 
           {/* Título */}
-          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+          <h2 className={`text-2xl sm:text-3xl font-bold text-white mb-4 transition-all duration-500 ease-out delay-200 transform ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}>
             ¡Bienvenido a <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">Moon Reps</span>!
           </h2>
 
           {/* Descripción */}
-          <p className="text-gray-300 text-sm sm:text-base mb-8 leading-relaxed">
-            Únete a nuestra comunidad y obtén acceso exclusivo a los mejores productos con descuentos increíbles.
+          <p className={`text-gray-300 text-sm sm:text-base mb-8 leading-relaxed transition-all duration-500 ease-out delay-300 transform ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}>
+            Únete a nuestra comunidad de Discord para obtener cupones de envío exclusivos
           </p>
 
           {/* Botones */}
-          <div className="space-y-4">
+          <div className={`space-y-4 transition-all duration-500 ease-out delay-400 transform ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}>
             {/* Botón Kakobuy */}
             <button
               onClick={handleKakobuyClick}
@@ -112,7 +129,9 @@ const WelcomePopup = () => {
           </div>
 
           {/* Texto adicional */}
-          <p className="text-gray-500 text-xs mt-6">
+          <p className={`text-gray-500 text-xs mt-6 transition-all duration-500 ease-out delay-500 transform ${
+            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
+          }`}>
             Puedes cerrar esta ventana y continuar explorando los productos
           </p>
         </div>
