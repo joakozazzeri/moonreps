@@ -9,11 +9,11 @@ import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
 import WelcomePopup from '../components/WelcomePopup';
 
-export default function Home({ initialProducts, categories, totalProducts, currentPage }) {
+export default function Home({ initialProducts, categories, totalProducts, currentPage: serverCurrentPage }) {
   const [products, setProducts] = useState(initialProducts);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos los Productos');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(serverCurrentPage || 1);
   const productsPerPage = 25;
 
   // Estado para el Lightbox
@@ -44,8 +44,8 @@ export default function Home({ initialProducts, categories, totalProducts, curre
     }
     
     setProducts(filtered);
-    setCurrentPage(1); // Resetear a la primera página cuando cambian los filtros
-  }, [searchTerm, selectedCategory, initialProducts]);
+    setCurrentPage(serverCurrentPage || 1); // Usar el valor del servidor
+  }, [searchTerm, selectedCategory, initialProducts, serverCurrentPage]);
 
   // Calcular productos para la página actual
   const indexOfLastProduct = currentPage * productsPerPage;
