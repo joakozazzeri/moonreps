@@ -391,48 +391,45 @@ export default function QC() {
                   ))}
                 </div>
               </div>
-                          ) : (
+            ) : loading ? (
               // Mostrar loading con pasos
-              loading ? (
-                <div className="text-center py-12">
-                  <div className="bg-blue-500/20 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/50 shadow-xl shadow-blue-500/10">
-                    <div className="text-blue-400 mb-4">
-                      <svg className="w-16 h-16 mx-auto mb-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-semibold text-blue-300 mb-2">
-                      Procesando QC...
-                    </h3>
-                    <p className="text-blue-400 text-sm mb-4">
-                      {loadingStep || 'Convirtiendo URL y extrayendo imágenes...'}
-                    </p>
-                    <div className="flex items-center justify-center gap-2">
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
-                    </div>
+              <div className="text-center py-12">
+                <div className="bg-blue-500/20 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/50 shadow-xl shadow-blue-500/10">
+                  <div className="text-blue-400 mb-4">
+                    <svg className="w-16 h-16 mx-auto mb-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-blue-300 mb-2">
+                    Procesando QC...
+                  </h3>
+                  <p className="text-blue-400 text-sm mb-4">
+                    {loadingStep || 'Convirtiendo URL y extrayendo imágenes...'}
+                  </p>
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                    <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                   </div>
                 </div>
-              ) : (
+              </div>
+            ) : (
               // Mostrar mensaje cuando no hay imágenes QC
-              !loading && (
-                <div className="text-center py-12">
-                  <div className="bg-red-500/20 backdrop-blur-sm rounded-2xl p-8 border border-red-500/50 shadow-xl shadow-red-500/10">
-                    <div className="text-red-400 mb-4">
-                      <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-semibold text-red-300 mb-2">
-                      No hay imágenes QC disponibles
-                    </h3>
-                    <p className="text-red-400 text-sm">
-                      Este producto no tiene imágenes de control de calidad cargadas o no se pudieron obtener.
-                    </p>
+              <div className="text-center py-12">
+                <div className="bg-red-500/20 backdrop-blur-sm rounded-2xl p-8 border border-red-500/50 shadow-xl shadow-red-500/10">
+                  <div className="text-red-400 mb-4">
+                    <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
                   </div>
+                  <h3 className="text-xl font-semibold text-red-300 mb-2">
+                    No hay imágenes QC disponibles
+                  </h3>
+                  <p className="text-red-400 text-sm">
+                    Este producto no tiene imágenes de control de calidad cargadas o no se pudieron obtener.
+                  </p>
                 </div>
-              )
+              </div>
             )}
 
             {/* Modal de imagen */}
