@@ -5,10 +5,10 @@ import chromium from '@sparticuz/chromium';
 // Cache simple en memoria (se resetea en cada deploy)
 const urlCache = new Map();
 
-// Rate limiting básico
+// Rate limiting básico (deshabilitado)
 const requestCounts = new Map();
 const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutos
-const RATE_LIMIT_MAX = 10; // máximo 10 requests por IP
+const RATE_LIMIT_MAX = 999; // prácticamente sin límite
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
