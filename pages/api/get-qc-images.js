@@ -1,5 +1,6 @@
 // pages/api/get-qc-images.js
-import puppeteer from 'puppeteer';
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -84,38 +85,13 @@ export default async function handler(req, res) {
 
     console.log('🚀 Iniciando Puppeteer para URL:', finalConvertedUrl);
 
-    // Iniciar Puppeteer con optimizaciones
+    // Iniciar Puppeteer con optimizaciones para Vercel
     browser = await puppeteer.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-dev-shm-usage',
-        '--disable-accelerated-2d-canvas',
-        '--no-first-run',
-        '--no-zygote',
-        '--disable-gpu',
-        '--disable-web-security',
-        '--disable-features=VizDisplayCompositor',
-        '--disable-extensions',
-        '--disable-plugins',
-        '--disable-images', // No cargar imágenes innecesarias
-        '--disable-javascript', // Deshabilitar JS si no es necesario
-        '--disable-css',
-        '--disable-fonts',
-        '--disable-default-apps',
-        '--disable-sync',
-        '--disable-translate',
-        '--hide-scrollbars',
-        '--mute-audio',
-        '--no-default-browser-check',
-        '--no-pings',
-        '--disable-background-timer-throttling',
-        '--disable-backgrounding-occluded-windows',
-        '--disable-renderer-backgrounding',
-        '--disable-features=TranslateUI',
-        '--disable-ipc-flooding-protection'
-      ]
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
+      ignoreHTTPSErrors: true,
     });
 
     const page = await browser.newPage();
