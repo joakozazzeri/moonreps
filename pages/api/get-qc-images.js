@@ -135,6 +135,7 @@ export default async function handler(req, res) {
       executablePath: await chromium.executablePath(),
       headless: chromium.headless,
       ignoreHTTPSErrors: true,
+      timeout: 30000, // Aumentar timeout para primera inicialización
     });
 
     const page = await browser.newPage();
@@ -158,8 +159,8 @@ export default async function handler(req, res) {
 
     console.log('⏳ Esperando que se carguen las imágenes...');
     
-    // Esperar menos tiempo pero más eficientemente
-    await new Promise(resolve => setTimeout(resolve, 1000)); // Reducido de 2s a 1s
+    // Esperar más tiempo en la primera carga para asegurar que todo esté listo
+    await new Promise(resolve => setTimeout(resolve, 2000)); // Aumentado a 2s para primera carga
 
     // Buscar imágenes dentro del div good-item-box
     console.log('🔍 Buscando imágenes en good-item-box...');
@@ -254,6 +255,45 @@ export default async function handler(req, res) {
     console.log('✅ Imágenes encontradas con Puppeteer:', qcImages.length);
     console.log('🖼️ URLs de imágenes QC:', qcImages);
 
+    // Si no se encontraron imágenes, intentar una vez más con más tiempo de espera
+    if (qcImages.length === 0) {
+      console.log('🔄 No se encontraron imágenes, intentando de nuevo con más tiempo...');
+      
+      // Esperar un poco más
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      // Buscar imágenes nuevamente
+      const retryImages = await page.evaluate(() => {
+        const images = [];
+        
+        try {
+          // Buscar en toda la página sin restricciones
+          const allImages = document.querySelectorAll('img');
+          allImages.forEach(img => {
+            const isInDetailType = img.closest('.good-item-detail-type');
+            if (isInDetailType) {
+              return; // Saltar esta imagen
+            }
+            
+            const src = img.src || img.dataset.src || img.dataset.original;
+            if (src && src.includes('http') && src.includes('file.uufinds.com/product')) {
+              images.push(src);
+              console.log('Imagen QC encontrada en retry:', src);
+            }
+          });
+        } catch (error) {
+          console.error('Error en retry:', error);
+        }
+        
+        return images;
+      });
+      
+      if (retryImages.length > 0) {
+        console.log('✅ Imágenes encontradas en retry:', retryImages.length);
+        qcImages.push(...retryImages);
+      }
+    }
+
     await browser.close();
 
     // Filtrar y procesar las imágenes encontradas
@@ -308,7 +348,7 @@ export default async function handler(req, res) {
       success: true,
       images: [],
       count: 0,
-      message: 'No se pudieron obtener imágenes QC para este producto',
+      message: 'No se pudieron obtener imágenes QC para este producto. Intenta refrescar la página.',
       error: error.message
     });
   }
