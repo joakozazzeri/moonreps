@@ -9,7 +9,7 @@ import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
 import WelcomePopup from '../components/WelcomePopup';
 
-export default function Home({ initialProducts, categories }) {
+export default function Home({ initialProducts, categories, totalProducts, currentPage }) {
   const [products, setProducts] = useState(initialProducts);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos los Productos');
@@ -336,7 +336,7 @@ export default function Home({ initialProducts, categories }) {
   );
 }
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ query }) {
   try {
     const { supabase, isSupabaseConfigured } = require('../lib/supabase');
     
@@ -347,15 +347,28 @@ export async function getServerSideProps() {
         props: {
           initialProducts: [],
           categories: ['Todos los Productos'],
+          totalProducts: 0,
+          currentPage: 1,
         },
       };
     }
     
-    // Obtener productos ordenados por fecha de creación (más recientes primero)
+    // Configuración de paginación
+    const page = parseInt(query.page) || 1;
+    const limit = 12; // Solo 12 productos por página
+    const offset = (page - 1) * limit;
+    
+    // Obtener total de productos para paginación
+    const { count: totalProducts } = await supabase
+      .from('products')
+      .select('*', { count: 'exact', head: true });
+    
+    // Obtener productos con paginación
     const { data: products, error: productsError } = await supabase
       .from('products')
       .select('*')
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
     
     if (productsError) {
       console.error('Error fetching products:', productsError);
@@ -363,6 +376,8 @@ export async function getServerSideProps() {
         props: {
           initialProducts: [],
           categories: ['Todos los Productos'],
+          totalProducts: 0,
+          currentPage: 1,
         },
       };
     }
@@ -374,6 +389,8 @@ export async function getServerSideProps() {
         props: {
           initialProducts: [],
           categories: ['Todos los Productos'],
+          totalProducts: 0,
+          currentPage: 1,
         },
       };
     }
@@ -391,6 +408,8 @@ export async function getServerSideProps() {
         props: {
           initialProducts: [],
           categories: ['Todos los Productos'],
+          totalProducts: 0,
+          currentPage: 1,
         },
       };
     }
@@ -411,9 +430,11 @@ export async function getServerSideProps() {
     
     const productsWithParsedImages = products.map(p => {
       try {
+        const imageUrls = Array.isArray(p.imageUrls) ? p.imageUrls : JSON.parse(p.imageUrls || '[]');
         return {
           ...p,
-          imageUrls: Array.isArray(p.imageUrls) ? p.imageUrls : JSON.parse(p.imageUrls || '[]')
+          // Solo enviar la primera imagen para reducir el payload inicial
+          imageUrls: imageUrls.slice(0, 1)
         };
       } catch (error) {
         console.error('Error parsing imageUrls for product:', p.id, error);
@@ -428,6 +449,8 @@ export async function getServerSideProps() {
       props: {
         initialProducts: productsWithParsedImages,
         categories,
+        totalProducts: totalProducts || 0,
+        currentPage: page,
       },
     };
   } catch (error) {
@@ -436,6 +459,8 @@ export async function getServerSideProps() {
       props: {
         initialProducts: [],
         categories: ['Todos los Productos'],
+        totalProducts: 0,
+        currentPage: 1,
       },
     };
   }
