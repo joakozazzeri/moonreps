@@ -49,9 +49,9 @@ export default async function handler(req, res) {
       success: true, 
       images: [], 
       count: 0, 
-      message: 'Timeout: La operación tardó demasiado' 
+      message: 'Timeout: La operación tardó demasiado. Intenta de nuevo.' 
     });
-  }, 20000); // Reducido a 20 segundos
+  }, 15000); // Reducido a 15 segundos para mejor UX
 
   let browser = null;
   
@@ -159,8 +159,8 @@ export default async function handler(req, res) {
 
     console.log('⏳ Esperando que se carguen las imágenes...');
     
-    // Esperar más tiempo en la primera carga para asegurar que todo esté listo
-    await new Promise(resolve => setTimeout(resolve, 2000)); // Aumentado a 2s para primera carga
+    // Esperar tiempo optimizado para carga de imágenes
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Reducido a 1.5s para mejor velocidad
 
     // Buscar imágenes dentro del div good-item-box
     console.log('🔍 Buscando imágenes en good-item-box...');

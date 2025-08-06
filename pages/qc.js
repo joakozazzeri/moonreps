@@ -10,6 +10,7 @@ import ImageModal from '../components/ImageModal';
 export default function QC() {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState('');
   const [error, setError] = useState('');
   const [qcImages, setQcImages] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -30,6 +31,7 @@ export default function QC() {
 
   const handleAutoSubmit = async (urlToSubmit) => {
     setLoading(true);
+    setLoadingStep('Convirtiendo URL...');
     setError('');
     setQcImages([]);
 
@@ -60,6 +62,7 @@ export default function QC() {
       setError(err.message || 'Error al procesar la solicitud');
     } finally {
       setLoading(false);
+      setLoadingStep('');
     }
   };
 
@@ -71,6 +74,7 @@ export default function QC() {
     }
 
     setLoading(true);
+    setLoadingStep('Convirtiendo URL...');
     setError('');
     setQcImages([]);
 
@@ -387,7 +391,30 @@ export default function QC() {
                   ))}
                 </div>
               </div>
-            ) : (
+                          ) : (
+              // Mostrar loading con pasos
+              loading ? (
+                <div className="text-center py-12">
+                  <div className="bg-blue-500/20 backdrop-blur-sm rounded-2xl p-8 border border-blue-500/50 shadow-xl shadow-blue-500/10">
+                    <div className="text-blue-400 mb-4">
+                      <svg className="w-16 h-16 mx-auto mb-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-semibold text-blue-300 mb-2">
+                      Procesando QC...
+                    </h3>
+                    <p className="text-blue-400 text-sm mb-4">
+                      {loadingStep || 'Convirtiendo URL y extrayendo imágenes...'}
+                    </p>
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
               // Mostrar mensaje cuando no hay imágenes QC
               !loading && (
                 <div className="text-center py-12">
