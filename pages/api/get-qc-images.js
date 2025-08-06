@@ -2,10 +2,45 @@
 import puppeteer from 'puppeteer-core';
 import chromium from '@sparticuz/chromium';
 
+// Cache simple en memoria (se resetea en cada deploy)
+const urlCache = new Map();
+
+// Rate limiting básico
+const requestCounts = new Map();
+const RATE_LIMIT_WINDOW = 15 * 60 * 1000; // 15 minutos
+const RATE_LIMIT_MAX = 10; // máximo 10 requests por IP
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ message: 'Método no permitido' });
   }
+
+  // Rate limiting básico
+  const clientIP = req.headers['x-forwarded-for'] || req.connection.remoteAddress || 'unknown';
+  const now = Date.now();
+  
+  if (!requestCounts.has(clientIP)) {
+    requestCounts.set(clientIP, { count: 0, resetTime: now + RATE_LIMIT_WINDOW });
+  }
+  
+  const clientData = requestCounts.get(clientIP);
+  
+  // Reset counter if window has passed
+  if (now > clientData.resetTime) {
+    clientData.count = 0;
+    clientData.resetTime = now + RATE_LIMIT_WINDOW;
+  }
+  
+  // Check rate limit
+  if (clientData.count >= RATE_LIMIT_MAX) {
+    return res.status(429).json({ 
+      message: 'Demasiadas solicitudes. Intenta de nuevo en 15 minutos.',
+      retryAfter: Math.ceil((clientData.resetTime - now) / 1000)
+    });
+  }
+  
+  // Increment counter
+  clientData.count++;
 
   // Timeout para evitar que la API se cuelgue
   const timeout = setTimeout(() => {
@@ -16,7 +51,7 @@ export default async function handler(req, res) {
       count: 0, 
       message: 'Timeout: La operación tardó demasiado' 
     });
-  }, 25000); // 25 segundos máximo
+  }, 20000); // Reducido a 20 segundos
 
   let browser = null;
   
@@ -83,6 +118,14 @@ export default async function handler(req, res) {
       return res.status(400).json({ message: 'URL convertida es requerida' });
     }
 
+    // Verificar cache
+    const cacheKey = `qc-${finalConvertedUrl}`;
+    if (urlCache.has(cacheKey)) {
+      console.log('✅ Resultado encontrado en cache');
+      clearTimeout(timeout);
+      return res.status(200).json(urlCache.get(cacheKey));
+    }
+
     console.log('🚀 Iniciando Puppeteer para URL:', finalConvertedUrl);
 
     // Iniciar Puppeteer con optimizaciones para Vercel
@@ -108,7 +151,7 @@ export default async function handler(req, res) {
     console.log('🌐 Navegando a:', finalConvertedUrl);
     await page.goto(finalConvertedUrl, { 
       waitUntil: 'domcontentloaded', // Más rápido que networkidle2
-      timeout: 15000 // Reducir timeout
+      timeout: 10000 // Reducido de 15s a 10s
     });
     
     console.log('✅ Página cargada exitosamente');
@@ -116,7 +159,7 @@ export default async function handler(req, res) {
     console.log('⏳ Esperando que se carguen las imágenes...');
     
     // Esperar menos tiempo pero más eficientemente
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    await new Promise(resolve => setTimeout(resolve, 1000)); // Reducido de 2s a 1s
 
     // Buscar imágenes dentro del div good-item-box
     console.log('🔍 Buscando imágenes en good-item-box...');
@@ -134,7 +177,7 @@ export default async function handler(req, res) {
       const images = [];
       
       try {
-        // Buscar específicamente en divs con clase good-item-box
+        // Buscar específicamente en divs con clase good-item-box (más eficiente)
         const goodItemBoxes = document.querySelectorAll('.good-item-box');
         console.log('Encontrados divs good-item-box:', goodItemBoxes.length);
         
@@ -158,30 +201,10 @@ export default async function handler(req, res) {
           });
         });
         
-        // Si no encontramos imágenes en good-item-box, buscar en toda la página pero solo UUFinds
-        if (images.length === 0) {
-          console.log('Buscando imágenes de UUFinds en toda la página...');
-          const allImages = document.querySelectorAll('img');
-          allImages.forEach(img => {
-            // Verificar si la imagen está dentro de un div good-item-detail-type
-            const isInDetailType = img.closest('.good-item-detail-type');
-            if (isInDetailType) {
-              console.log('Imagen excluida por estar en good-item-detail-type:', img.src);
-              return; // Saltar esta imagen
-            }
-            
-            const src = img.src || img.dataset.src || img.dataset.original;
-            if (src && src.includes('http') && src.includes('file.uufinds.com/product') && !images.includes(src)) {
-              images.push(src);
-              console.log('Imagen QC encontrada en toda la página:', src);
-            }
-          });
-        }
-        
-        // Si aún no hay imágenes, buscar en contenedores específicos de QC
+        // Si no encontramos imágenes en good-item-box, buscar solo en contenedores específicos
         if (images.length === 0) {
           console.log('Buscando en contenedores específicos de QC...');
-          const qcContainers = document.querySelectorAll('[class*="qc"], [class*="quality"], [class*="detail"]');
+          const qcContainers = document.querySelectorAll('[class*="qc"], [class*="quality"]');
           qcContainers.forEach(container => {
             // Verificar si el contenedor está dentro de good-item-detail-type
             const isInDetailType = container.closest('.good-item-detail-type');
@@ -198,6 +221,26 @@ export default async function handler(req, res) {
                 console.log('Imagen QC encontrada en contenedor específico:', src);
               }
             });
+          });
+        }
+        
+        // Solo como último recurso, buscar en toda la página
+        if (images.length === 0) {
+          console.log('Buscando imágenes de UUFinds en toda la página...');
+          const allImages = document.querySelectorAll('img');
+          allImages.forEach(img => {
+            // Verificar si la imagen está dentro de un div good-item-detail-type
+            const isInDetailType = img.closest('.good-item-detail-type');
+            if (isInDetailType) {
+              console.log('Imagen excluida por estar en good-item-detail-type:', img.src);
+              return; // Saltar esta imagen
+            }
+            
+            const src = img.src || img.dataset.src || img.dataset.original;
+            if (src && src.includes('http') && src.includes('file.uufinds.com/product') && !images.includes(src)) {
+              images.push(src);
+              console.log('Imagen QC encontrada en toda la página:', src);
+            }
           });
         }
         
@@ -228,9 +271,8 @@ export default async function handler(req, res) {
       
     console.log('✅ Imágenes filtradas de file.uufinds.com/product:', processedImages.length);
 
-    clearTimeout(timeout);
-    
-    return res.status(200).json({
+    // Guardar en cache
+    const result = {
       success: true,
       images: processedImages,
       count: processedImages.length,
@@ -239,7 +281,14 @@ export default async function handler(req, res) {
       message: processedImages.length > 0 && processedImages[0].includes('file.uufinds.com/product') 
         ? 'Imágenes de QC de UUFinds obtenidas exitosamente'
         : 'No se encontraron imágenes de QC de UUFinds'
-    });
+    };
+    
+    urlCache.set(cacheKey, result);
+    console.log('💾 Resultado guardado en cache');
+    
+    clearTimeout(timeout);
+    
+    return res.status(200).json(result);
 
   } catch (error) {
     console.error('❌ Error obteniendo imágenes QC:', error);
