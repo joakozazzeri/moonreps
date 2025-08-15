@@ -137,9 +137,16 @@ export default async function handler(req, res) {
               }
             }
 
+            // Validar y procesar el precio
+            let processedPrice = parseFloat(product.price);
+            if (isNaN(processedPrice) || processedPrice < 0) {
+              console.warn(`Producto "${product.name}" tiene precio inválido: "${product.price}". Saltando producto.`);
+              continue; // Saltar este producto
+            }
+
             const productData = {
               name: product.name,
-              price: parseFloat(product.price),
+              price: processedPrice,
               category: product.category,
               brand: product.brand || '',
               imageUrls: imageUrlsJson,

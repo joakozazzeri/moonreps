@@ -22,13 +22,18 @@ export default function Vendedores() {
       link: "https://firerep.x.yupoo.com/"
     },
     {
+      nombre: "PENGREPS",
+      descripcion: "Especializado en Derschutze y Mertra.",
+      link: "https://pengreps.x.yupoo.com/albums"
+    },
+    {
       nombre: "GOAT",
       descripcion: "Encuentra Corteiz, Trapstar, Syna y todo lo nuevo del mercado Drip.",
       link: "https://goat-official.x.yupoo.com/"
     },
     {
       nombre: "BULLREPS",
-      descripcion: "Considerado de las mejores fábricas de Arcteryx.",
+      descripcion: "El mejor vendedor de Arcteryx. También tiene varias marcas de streetwear.",
       link: "https://bullrep.x.yupoo.com/"
     },
     {
@@ -182,7 +187,7 @@ export default function Vendedores() {
       link: "#"
     },
     {
-      nombre: "JDMY",
+      nombre: "JMDY",
       descripcion: "Considerado el mejor vendedor de zapatillas.",
       link: "https://tianjin-no1.x.yupoo.com/"
     },
@@ -238,8 +243,69 @@ export default function Vendedores() {
     }
   ]);
 
+  // Categorías por nombre
+  const nombresRopa = new Set([
+    "DRAGONREPS",
+    "ANGELKING47",
+    "FIREREP",
+    "PENGREPS",
+    "GOAT",
+    "BULLREPS",
+    "PIKACHUSHOP",
+    "TIGERREPS",
+    "3MADMAN",
+    "HOTDOG",
+    "TOPHOTFASH",
+    "1TO1",
+    "PLANE1908",
+    "CHAOSMADE",
+    "MALPHITE",
+    "TOPSTONEY",
+    "JIEYI168",
+    "FEIYU8698",
+    "LOGAN",
+    "AKDINGJI",
+    "ROCKETREPS",
+    "TOPACNEY",
+    "SHARKBREEDER",
+    "UNIONKINGDOM",
+    "MARTINREPS",
+    "TAURUSREPS",
+    "PPs",
+    "REP KINGDOM",
+    "SURVIVAL CLOTH",
+    "CND CLOTH",
+    "AAAAJERSEY",
+    "SCARLETLUX",
+    "YIAYIAO",
+  ]);
+
+  const nombresZapatillas = new Set([
+    "JMDY",
+    "YOLO66",
+    "WWTOP",
+    "QCXCAJ1",
+    "PAIREPS",
+    "BAYMAX",
+    "AAAABULL",
+    "DRAGONREPS SHOES",
+    "CND SHOES",
+    "UMKAO",
+    "OLDCHEN",
+  ]);
+
+  const nombresAccesorios = new Set([
+    "OGWAVE",
+    "CND ISLAND",
+    "KIPPLING SELLER",
+  ]);
+
+  const vendedoresRopa = vendedores.filter(v => nombresRopa.has(v.nombre));
+  const vendedoresZapatillas = vendedores.filter(v => nombresZapatillas.has(v.nombre));
+  const vendedoresAccesorios = vendedores.filter(v => nombresAccesorios.has(v.nombre));
+
   return (
-    <div className="bg-gray-900 min-h-screen text-white relative overflow-hidden" style={{ fontFamily: "'Poppins', sans-serif" }}>
+    <div className="bg-gray-900 min-h-screen text-white relative overflow-hidden" style={{ fontFamily: "'Inter', 'Segoe UI', 'Roboto', sans-serif" }}>
       {/* Diseño minimalista del fondo general */}
       <div className="absolute inset-0 opacity-8">
         {/* Patrón de puntos sutiles */}
@@ -400,104 +466,323 @@ export default function Vendedores() {
         </div>
 
         {/* Vista de tabla para desktop */}
-        <div className="hidden lg:block bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern overflow-hidden shadow-2xl">
-          {/* Header de la tabla */}
-          <div className="bg-gray-700/30 backdrop-blur-sm border-b border-gray-600/30">
-            <div className="grid grid-cols-3 gap-4 p-6">
-              <div className="text-center">
-                <h3 className="text-xl font-bold text-white">VENDEDOR</h3>
-              </div>
-              <div className="text-center">
-                <h3 className="text-xl font-bold text-white">DESCRIPCIÓN</h3>
-              </div>
-              <div className="text-center">
-                <h3 className="text-xl font-bold text-white">LINK</h3>
+        <div className="hidden lg:block space-y-10">
+          {/* Ropa */}
+          <section className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern overflow-hidden shadow-2xl">
+            <div className="px-6 py-8 text-center bg-gradient-to-r from-blue-500/10 to-purple-500/10 border-b border-gray-600/30">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">Ropa</h2>
+            </div>
+            {/* Header de la tabla */}
+            <div className="bg-gray-700/30 backdrop-blur-sm border-b border-gray-600/30">
+              <div className="grid grid-cols-3 gap-4 p-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white tracking-wider" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>VENDEDOR</h3>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white tracking-wider" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>DESCRIPCIÓN</h3>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white tracking-wider" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>LINK</h3>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Contenido de la tabla */}
-          <div className="divide-y divide-gray-700/30">
-            {vendedores.length > 0 ? (
-              vendedores.map((vendedor, index) => (
-                <div key={index} className="hover:bg-gray-700/20 transition-colors duration-200">
-                  <div className="grid grid-cols-3 gap-4 p-6">
-                    <div className="text-center flex items-center justify-center">
-                      <h4 className="text-lg font-semibold text-white">{vendedor.nombre}</h4>
-                    </div>
-                    <div className="text-center flex items-center justify-center">
-                      <p className="text-base text-gray-300 leading-relaxed">{vendedor.descripcion}</p>
-                    </div>
-                    <div className="text-center flex items-center justify-center">
-                      <a 
-                        href={vendedor.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 text-white text-sm font-semibold rounded-soft hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
-                      >
-                        <span>Ver Vendedor</span>
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                        </svg>
-                      </a>
+            {/* Contenido de la tabla */}
+            <div className="divide-y divide-gray-700/30">
+              {vendedoresRopa.length > 0 ? (
+                vendedoresRopa.map((vendedor, index) => (
+                  <div key={index} className="hover:bg-gray-700/20 transition-colors duration-200">
+                    <div className="grid grid-cols-3 gap-4 p-6">
+                      <div className="text-center flex items-center justify-center">
+                        <h4 className="text-lg font-bold text-white tracking-wide" style={{ fontFamily: "'Outfit', 'Nunito', 'Inter', sans-serif" }}>{vendedor.nombre}</h4>
+                      </div>
+                      <div className="text-center flex items-center justify-center px-4">
+                        <p className="text-sm text-gray-300 leading-relaxed" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>{vendedor.descripcion}</p>
+                      </div>
+                      <div className="text-center flex items-center justify-center">
+                        <a 
+                          href={vendedor.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 text-white text-sm font-semibold rounded-soft hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
+                        >
+                          <span>Ver Vendedor</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="p-8 text-center">
+                  <div className="text-gray-400 mb-4">
+                    <svg className="w-16 h-16 mx-auto mb-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-300 mb-2">No hay vendedores disponibles</h3>
+                  <p className="text-gray-500">Los vendedores se agregarán próximamente</p>
                 </div>
-              ))
-            ) : (
-              <div className="p-8 text-center">
-                <div className="text-gray-400 mb-4">
-                  <svg className="w-16 h-16 mx-auto mb-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
+              )}
+            </div>
+          </section>
+
+          {/* Zapatillas */}
+          <section className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern overflow-hidden shadow-2xl">
+            <div className="px-6 py-8 text-center bg-gradient-to-r from-green-500/10 to-blue-500/10 border-b border-gray-600/30">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-500 to-green-600 bg-clip-text text-transparent">Zapatillas</h2>
+            </div>
+            <div className="bg-gray-700/30 backdrop-blur-sm border-b border-gray-600/30">
+              <div className="grid grid-cols-3 gap-4 p-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white tracking-wider" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>VENDEDOR</h3>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-300 mb-2">No hay vendedores disponibles</h3>
-                <p className="text-gray-500">Los vendedores se agregarán próximamente</p>
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white tracking-wider" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>DESCRIPCIÓN</h3>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white tracking-wider" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>LINK</h3>
+                </div>
               </div>
-            )}
-          </div>
+            </div>
+            <div className="divide-y divide-gray-700/30">
+              {vendedoresZapatillas.length > 0 ? (
+                vendedoresZapatillas.map((vendedor, index) => (
+                  <div key={index} className="hover:bg-gray-700/20 transition-colors duration-200">
+                    <div className="grid grid-cols-3 gap-4 p-6">
+                      <div className="text-center flex items-center justify-center">
+                        <h4 className="text-lg font-bold text-white tracking-wide" style={{ fontFamily: "'Outfit', 'Nunito', 'Inter', sans-serif" }}>{vendedor.nombre}</h4>
+                      </div>
+                      <div className="text-center flex items-center justify-center px-4">
+                        <p className="text-sm text-gray-300 leading-relaxed" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>{vendedor.descripcion}</p>
+                      </div>
+                      <div className="text-center flex items-center justify-center">
+                        <a 
+                          href={vendedor.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 text-white text-sm font-semibold rounded-soft hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
+                        >
+                          <span>Ver Vendedor</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center">
+                  <div className="text-gray-400 mb-4">
+                    <svg className="w-16 h-16 mx-auto mb-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-300 mb-2">No hay vendedores disponibles</h3>
+                  <p className="text-gray-500">Los vendedores se agregarán próximamente</p>
+                </div>
+              )}
+            </div>
+          </section>
+
+          {/* Accesorios */}
+          <section className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern overflow-hidden shadow-2xl">
+            <div className="px-6 py-8 text-center bg-gradient-to-r from-orange-500/10 to-pink-500/10 border-b border-gray-600/30">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-400 via-pink-500 to-orange-600 bg-clip-text text-transparent">Accesorios</h2>
+            </div>
+            <div className="bg-gray-700/30 backdrop-blur-sm border-b border-gray-600/30">
+              <div className="grid grid-cols-3 gap-4 p-6">
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white tracking-wider" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>VENDEDOR</h3>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white tracking-wider" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>DESCRIPCIÓN</h3>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-xl font-bold text-white tracking-wider" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>LINK</h3>
+                </div>
+              </div>
+            </div>
+            <div className="divide-y divide-gray-700/30">
+              {vendedoresAccesorios.length > 0 ? (
+                vendedoresAccesorios.map((vendedor, index) => (
+                  <div key={index} className="hover:bg-gray-700/20 transition-colors duration-200">
+                    <div className="grid grid-cols-3 gap-4 p-6">
+                      <div className="text-center flex items-center justify-center">
+                        <h4 className="text-lg font-bold text-white tracking-wide" style={{ fontFamily: "'Outfit', 'Nunito', 'Inter', sans-serif" }}>{vendedor.nombre}</h4>
+                      </div>
+                      <div className="text-center flex items-center justify-center px-4">
+                        <p className="text-sm text-gray-300 leading-relaxed" style={{ fontFamily: "'Inter', 'Segoe UI', sans-serif" }}>{vendedor.descripcion}</p>
+                      </div>
+                      <div className="text-center flex items-center justify-center">
+                        <a 
+                          href={vendedor.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 text-white text-sm font-semibold rounded-soft hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
+                        >
+                          <span>Ver Vendedor</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-8 text-center">
+                  <div className="text-gray-400 mb-4">
+                    <svg className="w-16 h-16 mx-auto mb-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-300 mb-2">No hay vendedores disponibles</h3>
+                  <p className="text-gray-500">Los vendedores se agregarán próximamente</p>
+                </div>
+              )}
+            </div>
+          </section>
         </div>
 
         {/* Vista de tarjetas para móvil y tablet */}
-        <div className="lg:hidden space-y-4">
-          {vendedores.length > 0 ? (
-            vendedores.map((vendedor, index) => (
-              <div key={index} className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern p-4 hover:bg-gray-700/20 transition-colors duration-200 shadow-lg">
-                <div className="space-y-4">
-                  {/* Nombre del vendedor */}
-                  <div className="flex items-center justify-between">
-                    <h4 className="text-xl font-bold text-white">{vendedor.nombre}</h4>
-                    <a 
-                      href={vendedor.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 text-white text-sm font-semibold rounded-soft hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
-                    >
-                      <span>Ver Vendedor</span>
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                  </div>
-                  
-                  {/* Descripción */}
-                  <div>
-                    <p className="text-base text-gray-300 leading-relaxed">{vendedor.descripcion}</p>
-                  </div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <div className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern p-6 text-center shadow-lg">
-              <div className="text-gray-400 mb-4">
-                <svg className="w-12 h-12 mx-auto mb-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-semibold text-gray-300 mb-2">No hay vendedores disponibles</h3>
-              <p className="text-gray-500 text-sm">Los vendedores se agregarán próximamente</p>
+        <div className="lg:hidden space-y-10">
+          {/* Ropa */}
+          <div>
+            <div className="text-center mb-6 p-6 bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">Ropa</h2>
             </div>
-          )}
+            <div className="space-y-4">
+              {vendedoresRopa.length > 0 ? (
+                vendedoresRopa.map((vendedor, index) => (
+                  <div key={index} className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern p-4 hover:bg-gray-700/20 transition-colors duration-200 shadow-lg">
+                    <div className="space-y-4">
+                      {/* Nombre del vendedor */}
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xl font-bold text-white">{vendedor.nombre}</h4>
+                        <a 
+                          href={vendedor.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 text-white text-sm font-semibold rounded-soft hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
+                        >
+                          <span>Ver Vendedor</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                      {/* Descripción */}
+                      <div>
+                        <p className="text-base text-gray-300 leading-relaxed">{vendedor.descripcion}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern p-6 text-center shadow-lg">
+                  <div className="text-gray-400 mb-4">
+                    <svg className="w-12 h-12 mx-auto mb-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">No hay vendedores disponibles</h3>
+                  <p className="text-gray-500 text-sm">Los vendedores se agregarán próximamente</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Zapatillas */}
+          <div>
+            <div className="text-center mb-6 p-6 bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-green-400 via-blue-500 to-green-600 bg-clip-text text-transparent">Zapatillas</h2>
+            </div>
+            <div className="space-y-4">
+              {vendedoresZapatillas.length > 0 ? (
+                vendedoresZapatillas.map((vendedor, index) => (
+                  <div key={index} className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern p-4 hover:bg-gray-700/20 transition-colors duration-200 shadow-lg">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xl font-bold text-white">{vendedor.nombre}</h4>
+                        <a 
+                          href={vendedor.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 text-white text-sm font-semibold rounded-soft hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
+                        >
+                          <span>Ver Vendedor</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                      <div>
+                        <p className="text-base text-gray-300 leading-relaxed">{vendedor.descripcion}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern p-6 text-center shadow-lg">
+                  <div className="text-gray-400 mb-4">
+                    <svg className="w-12 h-12 mx-auto mb-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">No hay vendedores disponibles</h3>
+                  <p className="text-gray-500 text-sm">Los vendedores se agregarán próximamente</p>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Accesorios */}
+          <div>
+            <div className="text-center mb-6 p-6 bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern">
+              <h2 className="text-3xl font-bold bg-gradient-to-r from-orange-400 via-pink-500 to-orange-600 bg-clip-text text-transparent">Accesorios</h2>
+            </div>
+            <div className="space-y-4">
+              {vendedoresAccesorios.length > 0 ? (
+                vendedoresAccesorios.map((vendedor, index) => (
+                  <div key={index} className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern p-4 hover:bg-gray-700/20 transition-colors duration-200 shadow-lg">
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xl font-bold text-white">{vendedor.nombre}</h4>
+                        <a 
+                          href={vendedor.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 text-white text-sm font-semibold rounded-soft hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
+                        >
+                          <span>Ver Vendedor</span>
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                      <div>
+                        <p className="text-base text-gray-300 leading-relaxed">{vendedor.descripcion}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="bg-gray-800/20 backdrop-blur-md border border-gray-700/30 rounded-modern p-6 text-center shadow-lg">
+                  <div className="text-gray-400 mb-4">
+                    <svg className="w-12 h-12 mx-auto mb-4 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-300 mb-2">No hay vendedores disponibles</h3>
+                  <p className="text-gray-500 text-sm">Los vendedores se agregarán próximamente</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </main>
 
