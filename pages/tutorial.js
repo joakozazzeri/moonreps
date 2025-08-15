@@ -196,38 +196,7 @@ export default function Tutorial() {
             <Image src="/logo.png" alt="Repse Logo" width={120} height={48} className="object-contain hover:scale-105 transition-transform duration-200 sm:w-40" />
           </div>
 
-          {/* Botones - ocultos en móvil, visibles en desktop */}
-          <div className="hidden lg:flex items-center space-x-4">
-            {/* Botón Kakobuy */}
-            <a 
-              href="https://ikako.vip/r/moonreps" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 border border-blue-500/30 rounded-soft text-white hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
-            >
-              <Image 
-                src="/kakobuy-logo.png" 
-                alt="Kakobuy Logo" 
-                width={24} 
-                height={24} 
-                className="w-6 h-6 object-contain"
-              />
-              <span className="text-base font-semibold">¡Regístrate en Kakobuy y recibe +$410 en cupones!</span>
-            </a>
 
-            {/* Botón Discord */}
-            <a 
-              href="https://discord.gg/moonreps" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 border border-blue-500/30 rounded-soft text-white hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
-            >
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
-              </svg>
-              <span className="text-base font-semibold">Únete al Discord</span>
-            </a>
-          </div>
 
           <div className="flex items-center">
             {/* Botón Productos - más pequeño en móvil */}
@@ -235,7 +204,7 @@ export default function Tutorial() {
               <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
               </svg>
-              <span className="text-xs sm:text-sm font-semibold">Productos</span>
+              <span className="hidden sm:inline text-xs sm:text-sm font-semibold">Productos</span>
             </Link>
 
             {/* Botón Vendedores */}
@@ -243,7 +212,15 @@ export default function Tutorial() {
               <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              <span className="text-xs sm:text-sm font-semibold">Vendedores</span>
+              <span className="hidden sm:inline text-xs sm:text-sm font-semibold">Vendedores</span>
+            </Link>
+
+            {/* Botón Calculadora */}
+            <Link href="/calculadora" className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 bg-green-500/20 backdrop-blur-sm border border-green-500/50 rounded-soft text-green-300 hover:text-white hover:bg-green-500/30 hover:border-green-500/70 transition-all duration-200 cursor-pointer ml-2">
+              <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+              </svg>
+              <span className="hidden sm:inline text-xs sm:text-sm font-semibold">Calculadora</span>
             </Link>
 
             {/* Botón Tutorial */}
@@ -251,64 +228,56 @@ export default function Tutorial() {
               <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
               </svg>
-              <span className="text-xs sm:text-sm font-semibold">Tutorial</span>
+              <span className="hidden sm:inline text-xs sm:text-sm font-semibold">Tutorial</span>
             </Link>
           </div>
         </nav>
       </header>
 
       <main className="container mx-auto px-3 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-10 spacing-modern">
-        {/* Botones promocionales para móvil */}
-        <div className="lg:hidden mb-6 space-y-3 relative z-10">
-          <a 
-            href="https://ikako.vip/r/moonreps" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="block w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 border border-blue-500/30 rounded-soft text-white hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer text-sm relative z-10 pointer-events-auto"
-            onClick={(e) => {
-              e.preventDefault();
-              window.open('https://ikako.vip/r/moonreps', '_blank');
-            }}
-          >
-            <Image 
-              src="/kakobuy-logo.png" 
-              alt="Kakobuy Logo" 
-              width={20} 
-              height={20} 
-              className="w-5 h-5 object-contain pointer-events-none"
-            />
-            <span className="font-semibold pointer-events-none">¡Regístrate en Kakobuy y recibe +$410 en cupones!</span>
-          </a>
 
-          <a 
-            href="https://discord.gg/moonreps" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="block w-full flex items-center justify-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 border border-blue-500/30 rounded-soft text-white hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer text-sm relative z-10 pointer-events-auto"
-            onClick={(e) => {
-              e.preventDefault();
-              window.open('https://discord.gg/moonreps', '_blank');
-            }}
-          >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
-            </svg>
-            <span className="font-semibold pointer-events-none">Únete al Discord</span>
-          </a>
-        </div>
 
         {/* Header */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4 sm:pt-8">
           <div className="text-center mb-6 sm:mb-12">
             <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold text-white mb-2 sm:mb-4">
-              Tutorial: ¿Como comprar en Kakobuy?
+              Tutorial: ¿Como comprar en <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(59,130,246,0.8)] drop-shadow-[0_0_4px_rgba(59,130,246,0.6)] drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]">Kakobuy</span>?
             </h1>
             <p className="text-base sm:text-xl text-gray-300 mb-4 sm:mb-6">
               En este tutorial te enseñaremos como realizar tu primera compra. Te mostraremos cómo buscar productos, realizar su respectiva compra y enviarlos a tu país.
             </p>
           </div>
 
+          {/* Botones promocionales */}
+          <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a 
+              href="https://ikako.vip/r/moonreps" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 border border-blue-500/30 rounded-modern text-white hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duración-200 cursor-pointer shadow-2xl hover:shadow-blue-500/25 backdrop-blur-sm"
+            >
+              <Image 
+                src="/kakobuy-logo.png" 
+                alt="Kakobuy Logo" 
+                width={28} 
+                height={28} 
+                className="w-7 h-7 object-contain"
+              />
+              <span className="text-base font-bold">¡Regístrate en Kakobuy y recibe +$410 en cupones!</span>
+            </a>
 
+            <a 
+              href="https://discord.gg/moonreps" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-700 border border-indigo-500/30 rounded-modern text-white hover:from-indigo-600 hover:via-purple-700 hover:to-indigo-800 transition-all duración-200 cursor-pointer shadow-2xl hover:shadow-indigo-500/25 backdrop-blur-sm"
+            >
+              <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
+              </svg>
+              <span className="text-base font-bold">Únete al Discord</span>
+            </a>
+          </div>
 
           {/* Navegación móvil - Solo visible en móvil */}
           <div className="lg:hidden mb-6">
