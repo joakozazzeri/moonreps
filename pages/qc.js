@@ -177,7 +177,7 @@ export default function QC() {
 
             {/* Botón Discord */}
             <a 
-              href="https://discord.gg/moonreps" 
+              href="https://discord.gg/3UW8ZAAWrG" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 border border-blue-500/30 rounded-soft text-white hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"
@@ -241,7 +241,7 @@ export default function QC() {
             </a>
 
             <a 
-              href="https://discord.gg/moonreps" 
+              href="https://discord.gg/3UW8ZAAWrG" 
               target="_blank" 
               rel="noopener noreferrer"
               className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-700 border border-indigo-500/30 rounded-modern text-white hover:from-indigo-600 hover:via-purple-700 hover:to-indigo-800 transition-all duration-200 cursor-pointer shadow-2xl hover:shadow-indigo-500/25 backdrop-blur-sm"

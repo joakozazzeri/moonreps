@@ -36,7 +36,7 @@ const WelcomePopup = () => {
   };
 
   const handleDiscordClick = () => {
-    window.open('https://discord.gg/moonreps', '_blank');
+    window.open('https://discord.gg/3UW8ZAAWrG', '_blank');
   };
 
   if (!isOpen) return null;

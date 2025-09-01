@@ -267,7 +267,7 @@ export default function Tutorial() {
             </a>
 
             <a 
-              href="https://discord.gg/moonreps" 
+              href="https://discord.gg/3UW8ZAAWrG" 
               target="_blank" 
               rel="noopener noreferrer"
               className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-700 border border-indigo-500/30 rounded-modern text-white hover:from-indigo-600 hover:via-purple-700 hover:to-indigo-800 transition-all duración-200 cursor-pointer shadow-2xl hover:shadow-indigo-500/25 backdrop-blur-sm"
@@ -444,7 +444,7 @@ export default function Tutorial() {
                     </p>
                     <div className="flex justify-center">
                       <a 
-                        href="https://discord.gg/moonreps" 
+                        href="https://discord.gg/3UW8ZAAWrG" 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-purple-500 via-blue-500 to-purple-600 border border-purple-500/30 text-white font-bold rounded-lg hover:from-purple-600 hover:via-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -810,7 +810,7 @@ export default function Tutorial() {
                               {method.title === "Búsqueda mediante Discord" && (
                                 <div className="mt-4">
                                   <a 
-                                    href="https://discord.gg/moonreps" 
+                                    href="https://discord.gg/3UW8ZAAWrG" 
                                     target="_blank" 
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 border border-blue-500/30 rounded-lg text-white hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duration-200 cursor-pointer"

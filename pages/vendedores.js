@@ -424,7 +424,7 @@ export default function Vendedores() {
           </a>
 
           <a 
-            href="https://discord.gg/moonreps" 
+            href="https://discord.gg/3UW8ZAAWrG" 
             target="_blank" 
             rel="noopener noreferrer"
             className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-700 border border-indigo-500/30 rounded-modern text-white hover:from-indigo-600 hover:via-purple-700 hover:to-indigo-800 transition-all duración-200 cursor-pointer shadow-2xl hover:shadow-indigo-500/25 backdrop-blur-sm"
