@@ -19,10 +19,16 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
-      // AÑADIDO: Agregamos el dominio de Cloudinary
+      // AÑADIDO: Dominio de Cloudinary (legacy)
       {
         protocol: 'https',
         hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pub-317779a682bd47eca296052d989ab665.r2.dev',
         port: '',
         pathname: '/**',
       },

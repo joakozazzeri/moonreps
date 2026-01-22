@@ -63,7 +63,7 @@ const BulkUploader = () => {
           setProgress(`Productos de prueba cargados: ${data.totalProcessed} de ${data.totalInCsv}`);
         } else {
           setMessage(data.message);
-          setProgress(`Proceso completado: ${data.totalProcessed} de ${data.totalInCsv} productos procesados${data.imagesSkipped ? ' (usando URLs de Cloudinary directamente)' : ''}`);
+          setProgress(`Proceso completado: ${data.totalProcessed} de ${data.totalInCsv} productos procesados${data.imagesSkipped ? ' (usando URLs finales directamente)' : ''}`);
         }
       } else {
         if (data.error && data.error.includes('timeout')) {
@@ -130,7 +130,7 @@ const BulkUploader = () => {
         <br />
         <span className="text-yellow-400 text-sm">Nota: Para archivos grandes, el proceso puede tardar hasta 60 segundos.</span>
         <br />
-        <span className="text-blue-400 text-sm">💡 Con &quot;Saltar imágenes&quot; activado, puedes usar URLs de Cloudinary directamente.</span>
+        <span className="text-blue-400 text-sm">💡 Con &quot;Saltar imágenes&quot; activado, puedes usar URLs finales directamente.</span>
         <br />
         <span className="text-yellow-400 text-sm">🧪 Modo de prueba: Revisa productos antes de guardarlos definitivamente.</span>
       </p>
@@ -160,7 +160,7 @@ const BulkUploader = () => {
             onChange={(e) => setSkipImages(e.target.checked)}
             className="rounded border-gray-600 bg-gray-700 text-blue-600 focus:ring-blue-500"
           />
-          <span>Usar URLs de Cloudinary directamente (más rápido)</span>
+          <span>Usar URLs finales directamente (más rápido)</span>
         </label>
         <label className="flex items-center space-x-2 text-sm text-yellow-300">
           <input

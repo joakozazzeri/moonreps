@@ -21,21 +21,26 @@ const ProductCard = ({ product, priority = false }) => {
     setCurrentIndex((prevIndex) => (prevIndex === imageUrls.length - 1 ? 0 : prevIndex + 1));
   };
 
-  // Función para determinar si la imagen es de Cloudinary
-  const isCloudinaryImage = (url) => {
-    return url && url.includes('res.cloudinary.com');
+  // Función para determinar si la imagen está hosteada en Cloudinary o R2
+  const isHostedImage = (url) => {
+    if (!url) return false;
+    return (
+      url.includes('res.cloudinary.com') ||
+      url.includes('.r2.dev') ||
+      url.includes('.r2.cloudflarestorage.com')
+    );
   };
 
   const currentImageUrl = imageUrls[currentIndex];
-  const isCloudinary = isCloudinaryImage(currentImageUrl);
+  const isHosted = isHostedImage(currentImageUrl);
 
   return (
     <div className="bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-modern overflow-hidden group card-modern hover-lift flex flex-col h-full">
       <div 
         className="relative w-full aspect-square overflow-hidden"
       >
-        {isCloudinary ? (
-          // Para imágenes de Cloudinary, usar img tag normal para evitar optimización de Vercel
+        {isHosted ? (
+          // Para imágenes hosteadas externamente, usar img tag normal para evitar optimización de Vercel
           <img
             src={currentImageUrl}
             alt={`${product.name} - image ${currentIndex + 1}`}
@@ -51,7 +56,7 @@ const ProductCard = ({ product, priority = false }) => {
             sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, (min-width: 640px) 50vw, 100vw"
             className="object-cover transition-all duration-500 group-hover:scale-105"
             priority={priority}
-            // Las imágenes de Cloudinary se sirven directamente desde res.cloudinary.com
+            // Las imágenes hosteadas externamente se sirven directo
             // sin pasar por el optimizador de Vercel, ahorrando ancho de banda
           />
         )}

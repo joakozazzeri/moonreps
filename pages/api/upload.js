@@ -1,13 +1,5 @@
 // pages/api/upload.js
-import { v2 as cloudinary } from 'cloudinary';
-
-// Configure Cloudinary with credentials from .env.local
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
+import { parseDataUrl, uploadBufferToR2 } from '../../lib/r2';
 
 // Increase the body size limit to handle larger image files
 export const config = {
@@ -27,16 +19,22 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'No image provided.' });
       }
 
-      // Upload the image to Cloudinary
-      const result = await cloudinary.uploader.upload(image, {
-        folder: 'repse-ecommerce', // Optional: store images in a specific folder
+      const parsed = parseDataUrl(image);
+      if (!parsed) {
+        return res.status(400).json({ error: 'Invalid image format.' });
+      }
+
+      const buffer = Buffer.from(parsed.base64, 'base64');
+      const url = await uploadBufferToR2({
+        buffer,
+        contentType: parsed.mimeType,
+        prefix: 'repse-ecommerce',
       });
 
-      // Send back the secure URL of the uploaded image
-      res.status(200).json({ url: result.secure_url });
+      res.status(200).json({ url });
 
     } catch (error) {
-      console.error('Error uploading to Cloudinary:', error);
+      console.error('Error uploading to R2:', error);
       res.status(500).json({ error: 'Image could not be uploaded.' });
     }
   } else {

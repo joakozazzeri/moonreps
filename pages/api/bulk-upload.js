@@ -1,16 +1,8 @@
 // pages/api/bulk-upload.js
 import Papa from 'papaparse';
-import { v2 as cloudinary } from 'cloudinary';
 import { supabase } from '../../lib/supabase';
+import { uploadRemoteImageToR2 } from '../../lib/r2';
 const { getDiscordBot } = require('../../lib/discord-bot');
-
-// Configuración de Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
 
 export const config = {
   api: {
@@ -20,29 +12,11 @@ export const config = {
   },
 };
 
-// Función para subir imagen a Cloudinary con timeout
-const uploadImageToCloudinary = async (imageUrl, timeout = 10000) => {
-  return new Promise((resolve, reject) => {
-    const timeoutId = setTimeout(() => {
-      reject(new Error('Image upload timeout'));
-    }, timeout);
-
-    cloudinary.uploader.upload(imageUrl, {
-      folder: 'repse-ecommerce-bulk',
-      transformation: [
-        { width: 1080, height: 1080, crop: "limit" },
-        { quality: "auto" },
-        { fetch_format: "auto" }
-      ]
-    })
-    .then(result => {
-      clearTimeout(timeoutId);
-      resolve(result.secure_url);
-    })
-    .catch(error => {
-      clearTimeout(timeoutId);
-      reject(error);
-    });
+// Función para subir imagen a R2 con timeout
+const uploadImageToR2 = async (imageUrl, timeout = 10000) => {
+  return uploadRemoteImageToR2(imageUrl, {
+    prefix: 'repse-ecommerce-bulk',
+    timeoutMs: timeout,
   });
 };
 
@@ -59,10 +33,10 @@ const processImagesAsync = async (imageUrls, maxConcurrency = 3) => {
   for (const chunk of chunks) {
     const chunkPromises = chunk.map(async (imageUrl) => {
       try {
-        const cloudinaryUrl = await uploadImageToCloudinary(imageUrl);
-        return cloudinaryUrl;
+        const hostedUrl = await uploadImageToR2(imageUrl);
+        return hostedUrl;
       } catch (error) {
-        console.error(`Failed to upload image ${imageUrl} to Cloudinary:`, error);
+        console.error(`Failed to upload image ${imageUrl} to R2:`, error);
         return null; // Retornar null para imágenes que fallan
       }
     });
@@ -124,16 +98,16 @@ export default async function handler(req, res) {
               cleanImageUrls = cleanImageUrls.replace(/"/g, '');
               
               if (skipImages) {
-                // Cuando se salta el procesamiento, usar las URLs directamente (asumiendo que ya son de Cloudinary)
-                const cloudinaryUrls = cleanImageUrls.split('|').map(url => url.trim()).filter(url => url);
-                imageUrlsJson = JSON.stringify(cloudinaryUrls);
+                // Cuando se salta el procesamiento, usar las URLs directamente (asumiendo que ya son URLs finales)
+                const hostedUrls = cleanImageUrls.split('|').map(url => url.trim()).filter(url => url);
+                imageUrlsJson = JSON.stringify(hostedUrls);
               } else {
                 // Procesar imágenes normalmente
                 const originalImageUrls = cleanImageUrls.split('|').map(url => url.trim()).filter(url => url);
                 
                 // Procesar imágenes de forma asíncrona
-                const cloudinaryUrls = await processImagesAsync(originalImageUrls);
-                imageUrlsJson = JSON.stringify(cloudinaryUrls);
+                const hostedUrls = await processImagesAsync(originalImageUrls);
+                imageUrlsJson = JSON.stringify(hostedUrls);
               }
             }
 
