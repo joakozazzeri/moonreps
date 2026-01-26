@@ -93,8 +93,8 @@ const BulkUploader = () => {
   // --- INICIO DE LA MODIFICACIÓN ---
   const downloadTemplate = () => {
     // Se añade la columna 'brand' a los encabezados y al ejemplo
-    const headers = "name,price,category,brand,imageUrls,buyLink";
-    const exampleRow = "Example T-Shirt,49.99,Tees,Nike,https://example.com/image1.jpg|https://example.com/image2.jpg,https://example.com/buy-link";
+    const headers = "name,price,category,brand,featured,imageUrls,buyLink";
+    const exampleRow = "Example T-Shirt,49.99,Tees,Nike,true,https://example.com/image1.jpg|https://example.com/image2.jpg,https://example.com/buy-link";
     const content = `${headers}\n${exampleRow}`;
     const blob = new Blob([content], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');

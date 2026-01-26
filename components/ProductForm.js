@@ -10,6 +10,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
   const [customCategory, setCustomCategory] = useState('');
   const [brand, setBrand] = useState('');
   const [buyLink, setBuyLink] = useState('');
+  const [featured, setFeatured] = useState(false);
   const [imageUrls, setImageUrls] = useState([]);
   const [isUploading, setIsUploading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -27,6 +28,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
       setPrice(editingProduct.price);
       setBrand(editingProduct.brand || '');
       setBuyLink(editingProduct.buyLink || '');
+      setFeatured(Boolean(editingProduct.featured));
       setImageUrls(Array.isArray(editingProduct.imageUrls) ? editingProduct.imageUrls : []);
       
       if (allCategories.includes(editingProduct.category)) {
@@ -44,6 +46,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
       setCustomCategory('');
       setBrand('');
       setBuyLink('');
+      setFeatured(false);
       setImageUrls([]);
     }
   }, [editingProduct, allCategories]);
@@ -117,7 +120,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
       return;
     }
 
-    const productData = { name, price, category: finalCategory, brand, buyLink, imageUrls: JSON.stringify(imageUrls) };
+    const productData = { name, price, category: finalCategory, brand, buyLink, featured, imageUrls: JSON.stringify(imageUrls) };
 
     if (editingProduct) {
       const res = await fetch(`/api/products/${editingProduct.id}`, {
@@ -136,6 +139,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
         setCustomCategory('');
         setBrand('');
         setBuyLink('');
+        setFeatured(false);
         setImageUrls([]);
         if (setEditingProduct) {
           setEditingProduct(null);
@@ -158,6 +162,7 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
         setCustomCategory('');
         setBrand('');
         setBuyLink('');
+        setFeatured(false);
         setImageUrls([]);
       }
     }
@@ -213,6 +218,16 @@ const ProductForm = ({ onProductAdded, onProductUpdated, editingProduct, setEdit
       <div className="mb-4">
         <label htmlFor="buyLink" className="block text-gray-300 font-semibold mb-2">Enlace de Compra</label>
         <input type="url" id="buyLink" value={buyLink} onChange={(e) => setBuyLink(e.target.value)} className="w-full px-3 py-2 border border-brand-light/30 bg-brand-dark text-brand-white rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-light" placeholder="https://ejemplo.com/producto" />
+      </div>
+      <div className="mb-4 flex items-center gap-3">
+        <input
+          type="checkbox"
+          id="featured"
+          checked={featured}
+          onChange={(e) => setFeatured(e.target.checked)}
+          className="accent-orange-400 w-4 h-4"
+        />
+        <label htmlFor="featured" className="text-gray-300 font-semibold">Producto destacado</label>
       </div>
        <div className="mb-4">
         <label className="block text-gray-300 font-semibold mb-2">Imágenes</label>

@@ -39,6 +39,14 @@ const ProductCard = ({ product, priority = false }) => {
       <div 
         className="relative w-full aspect-square overflow-hidden"
       >
+        {product.featured && (
+          <div className="absolute top-3 left-3 z-10 flex items-center gap-2 px-2.5 py-1 rounded-full bg-gradient-to-r from-orange-500/90 to-amber-400/90 border border-orange-300/60 text-xs font-bold text-gray-900 shadow-lg shadow-orange-500/30">
+            <svg className="w-3.5 h-3.5 text-gray-900" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10.5 2.5c.2.8-.1 1.7-.7 2.3-.7.7-1.1 1.6-1.1 2.5 0 1.9 1.6 3.5 3.5 3.5.9 0 1.7-.3 2.3-.8-.1 2.8-2.4 5-5.2 5-2.9 0-5.3-2.4-5.3-5.3 0-2.6 1.6-4.9 3.8-6 0 .7.6 1.3 1.3 1.3.7 0 1.3-.6 1.3-1.3 0-1.4-.7-2.6-1.7-3.5 1.2-.2 2.6.4 3.8 1.5z" />
+            </svg>
+            <span>Destacado</span>
+          </div>
+        )}
         {isHosted ? (
           // Para imágenes hosteadas externamente, usar img tag normal para evitar optimización de Vercel
           <img

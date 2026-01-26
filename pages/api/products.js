@@ -49,7 +49,7 @@ export default async function handler(req, res) {
       res.status(200).json([]);
     }
   } else if (req.method === 'POST') {
-    const { name, price, category, brand, buyLink, imageUrls } = req.body;
+    const { name, price, category, brand, buyLink, featured, imageUrls } = req.body;
     console.log('POST request body:', req.body);
     
     if (!name || !price || !category) {
@@ -68,6 +68,7 @@ export default async function handler(req, res) {
         category,
         brand: brand || '',
         buyLink: buyLink || '',
+        featured: Boolean(featured),
         imageUrls: imageUrls
       };
       

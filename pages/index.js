@@ -1,5 +1,5 @@
 // pages/index.js
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,11 +9,17 @@ import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
 import WelcomePopup from '../components/WelcomePopup';
 
-export default function Home({ initialProducts, categories }) {
+export default function Home({ initialProducts, categories, brands }) {
   const [products, setProducts] = useState(initialProducts);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos los Productos');
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [sortOrder, setSortOrder] = useState('default');
+  const [featuredOnly, setFeaturedOnly] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [filterTab, setFilterTab] = useState('price');
   const [currentPage, setCurrentPage] = useState(1);
+  const resultsRef = useRef(null);
   const productsPerPage = 25;
 
   // Estado para el Lightbox
@@ -31,21 +37,96 @@ export default function Home({ initialProducts, categories }) {
   const nextLightboxImage = () => setLightboxIndex((prev) => (prev === lightboxImages.length - 1 ? 0 : prev + 1));
   const prevLightboxImage = () => setLightboxIndex((prev) => (prev === 0 ? lightboxImages.length - 1 : prev - 1));
 
+  const normalizeBrand = (value) => {
+    return (value || '')
+      .replace(/​/g, '')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .toLowerCase();
+  };
+
   useEffect(() => {
     let filtered = [...initialProducts];
 
     if (selectedCategory !== 'Todos los Productos') {
       filtered = filtered.filter(p => p.category === selectedCategory);
     }
+
+    if (selectedBrands.length > 0) {
+      const lowerSelected = selectedBrands;
+      filtered = filtered.filter(p => {
+        const key = normalizeBrand(p.brand);
+        if (!key) {
+          return lowerSelected.includes('sin marca');
+        }
+        return lowerSelected.includes(key);
+      });
+    }
+
     if (searchTerm) {
       filtered = filtered.filter(p =>
         p.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
+
+    if (featuredOnly) {
+      filtered = filtered.filter(p => Boolean(p.featured));
+    }
+
+    if (sortOrder === 'price_desc') {
+      filtered.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
+    } else if (sortOrder === 'price_asc') {
+      filtered.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
+    }
     
     setProducts(filtered);
-    setCurrentPage(1); // Resetear a la primera página cuando cambian los filtros
-  }, [searchTerm, selectedCategory, initialProducts]);
+    setCurrentPage(1); // Resetear a la primera pagina cuando cambian los filtros
+  }, [searchTerm, selectedCategory, selectedBrands, sortOrder, featuredOnly, initialProducts]);
+
+              const availableBrands = useMemo(() => {
+    let base = [...initialProducts];
+
+    if (selectedCategory !== 'Todos los Productos') {
+      base = base.filter(p => p.category === selectedCategory);
+    }
+    if (searchTerm) {
+      base = base.filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    const counts = {};
+    const labelByKey = {};
+    let hasNoBrand = false;
+    base.forEach(product => {
+      const key = normalizeBrand(product.brand);
+      if (!key) {
+        hasNoBrand = true;
+        return;
+      }
+      if (!labelByKey[key]) {
+        labelByKey[key] = (product.brand || '').replace(/\s+/g, ' ').trim();
+      }
+      counts[key] = (counts[key] || 0) + 1;
+    });
+
+    const sortedKeys = Object.keys(counts).sort((a, b) => {
+      const la = labelByKey[a] || a;
+      const lb = labelByKey[b] || b;
+      return la.localeCompare(lb, 'es', { sensitivity: 'base' });
+    });
+
+    const list = sortedKeys.map((key) => ({ key, label: labelByKey[key] || key }));
+    if (hasNoBrand) {
+      list.push({ key: 'sin marca', label: 'Sin marca' });
+    }
+    return list;
+  }, [initialProducts, selectedCategory, searchTerm]);
+
+  useEffect(() => {
+    setSelectedBrands((prev) => prev.filter((b) => availableBrands.some((opt) => opt.key === b)));
+  }, [availableBrands]);
+
 
   // Calcular productos para la página actual
   const indexOfLastProduct = currentPage * productsPerPage;
@@ -59,13 +140,31 @@ export default function Home({ initialProducts, categories }) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+
+  const resetFilters = () => {
+    setSortOrder('default');
+    setSelectedBrands([]);
+    setFeaturedOnly(false);
+  };
+
+  const toggleBrand = (brand) => {
+    setSelectedBrands((prev) => {
+      if (prev.includes(brand)) {
+        return prev.filter((b) => b != brand);
+      }
+      return [...prev, brand];
+    });
+  };
+
+  const clearBrands = () => setSelectedBrands([]);
+
   return (
-    <div className="bg-gray-900 min-h-screen text-white relative overflow-hidden" style={{ fontFamily: "'Poppins', sans-serif" }}>
+    <div className="bg-gray-900 min-h-screen text-white relative overflow-x-hidden" style={{ fontFamily: "'Poppins', sans-serif" }}>
       {/* Popup de bienvenida */}
       <WelcomePopup />
       
       {/* Diseño minimalista del fondo general */}
-      <div className="absolute inset-0 opacity-8">
+      <div className="absolute inset-0 opacity-8 pointer-events-none">
         {/* Patrón de puntos sutiles */}
         <div className="absolute top-20 left-10 w-2 h-2 bg-blue-500/30 rounded-full"></div>
         <div className="absolute top-40 right-20 w-1 h-1 bg-purple-500/40 rounded-full"></div>
@@ -152,7 +251,7 @@ export default function Home({ initialProducts, categories }) {
         </nav>
       </header>
 
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 spacing-modern">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 spacing-modern" style={{ overflowAnchor: 'none' }}>
 
 
         <div className="mb-8 sm:mb-10 text-center">
@@ -201,12 +300,161 @@ export default function Home({ initialProducts, categories }) {
           products={products}
           allProducts={initialProducts}
         />
-        
+
+        <div className="mt-6 mb-4 flex items-center justify-end relative z-20">
+          <button
+            type="button"
+            onClick={() => setFilterOpen((v) => !v)}
+            className="flex items-center gap-2 px-4 py-2.5 bg-gray-900/90 border border-gray-700/60 rounded-soft text-gray-200 hover:text-white hover:bg-gray-800/90 hover:border-gray-500/70 transition-all duration-200 shadow-lg shadow-black/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/40"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M7 12h10m-7 6h4" />
+            </svg>
+            <span className="text-sm font-semibold">Filtros</span>
+          </button>
+
+          {filterOpen && (
+            <div className="absolute right-0 top-full mt-2 w-[320px] sm:w-[360px] z-50">
+              <div className="bg-gray-950/90 border border-gray-700/60 rounded-modern p-4 backdrop-blur-sm shadow-2xl shadow-black/40 filter-panel-enter">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-gray-200">
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 12.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-4.586L3.293 6.707A1 1 0 013 6V4z" />
+                  </svg>
+                  <span className="text-sm font-semibold">Filtros</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="text-xs text-gray-400 hover:text-gray-200"
+                >
+                  Restablecer todo
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between gap-4 text-sm mb-4 border-b border-gray-800">
+                <div className="flex items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => setFilterTab('price')}
+                  className={`pb-3 px-1 border-b-2 ${filterTab === 'price' ? 'border-orange-400 text-white' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v12m4-9h-5a3 3 0 000 6h2a3 3 0 010 6H8" />
+                    </svg>
+                    <span>Precio</span>
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFilterTab('brands')}
+                  className={`pb-3 px-1 border-b-2 ${filterTab === 'brands' ? 'border-orange-400 text-white' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
+                >
+                  <span className="inline-flex items-center gap-2">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h10l3 5-8 9-8-9 3-5z" />
+                    </svg>
+                    <span>Marcas</span>
+                  </span>
+                </button>
+                </div>
+                <label className="flex items-center gap-2 text-xs text-gray-300 pb-3 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={featuredOnly}
+                    onChange={(e) => setFeaturedOnly(e.target.checked)}
+                    className="peer sr-only"
+                  />
+                  <span className="inline-flex items-center justify-center w-4 h-4 rounded border border-orange-300/60 bg-gray-900/80 text-orange-200 transition-all duration-200 peer-checked:border-orange-400 peer-checked:bg-orange-500/20">
+                    <svg className="w-3 h-3 opacity-0 peer-checked:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </span>
+                  <span>Solo destacados</span>
+                </label>
+              </div>
+
+              {filterTab === 'price' && (
+                <div>
+                  <p className="text-xs text-gray-400 mb-3">Ordenar por Precio</p>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setSortOrder('default')}
+                      className={`flex flex-col items-center justify-center gap-1 text-xs sm:text-sm px-3 py-3 rounded-soft border ${sortOrder === 'default' ? 'border-orange-400/70 bg-orange-500/10 text-white' : 'border-gray-800 bg-gray-900/80 text-gray-300 hover:border-gray-600 hover:bg-gray-900/95 hover:-translate-y-0.5 transition-all duration-200'}`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12l4 4 10-10" />
+                      </svg>
+                      Ninguno
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSortOrder('price_asc')}
+                      className={`flex flex-col items-center justify-center gap-1 text-xs sm:text-sm px-3 py-3 rounded-soft border ${sortOrder === 'price_asc' ? 'border-orange-400/70 bg-orange-500/10 text-white' : 'border-gray-800 bg-gray-900/80 text-gray-300 hover:border-gray-600 hover:bg-gray-900/95 hover:-translate-y-0.5 transition-all duration-200'}`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17l5-5 5 5M12 12V7" />
+                      </svg>
+                      Menor a Mayor
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSortOrder('price_desc')}
+                      className={`flex flex-col items-center justify-center gap-1 text-xs sm:text-sm px-3 py-3 rounded-soft border ${sortOrder === 'price_desc' ? 'border-orange-400/70 bg-orange-500/10 text-white' : 'border-gray-800 bg-gray-900/80 text-gray-300 hover:border-gray-600 hover:bg-gray-900/95 hover:-translate-y-0.5 transition-all duration-200'}`}
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7l5 5 5-5M12 12v5" />
+                      </svg>
+                      Mayor a Menor
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {filterTab === 'brands' && (
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-xs text-gray-400">Selecciona una o varias marcas</p>
+                    <button
+                      type="button"
+                      onClick={clearBrands}
+                      className="text-xs text-orange-300 hover:text-orange-200"
+                    >
+                      Limpiar
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto pr-1">
+                    {(availableBrands || []).map((brand) => (
+                      <label key={brand.key} className="flex items-center gap-2 text-xs sm:text-sm text-gray-200 bg-gray-900/80 border border-gray-800 rounded-soft px-2.5 py-2 cursor-pointer hover:border-orange-400/40 hover:bg-gray-900 transition-all duration-200">
+                        <input
+                          type="checkbox"
+                          checked={selectedBrands.includes(brand.key)}
+                          onChange={() => toggleBrand(brand.key)}
+                          className="peer sr-only"
+                        />
+                        <span className="inline-flex items-center justify-center w-4 h-4 rounded border border-gray-600 bg-gray-800/80 text-orange-300 transition-all duration-200 peer-checked:border-orange-400 peer-checked:bg-orange-500/20">
+                          <svg className="w-3 h-3 opacity-0 peer-checked:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                          </svg>
+                        </span>
+                        <span className="truncate">{brand.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          )}
+        </div>
+
         <div className="my-6 sm:my-10">
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-10 gap-2">
+        <div ref={resultsRef} className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-10 gap-2">
           <p className="text-gray-400 text-base sm:text-lg text-center sm:text-left">
             Mostrando {currentProducts.length} de {products.length} productos
             {totalPages > 1 && ` (Página ${currentPage} de ${totalPages})`}
@@ -319,6 +567,7 @@ export async function getServerSideProps() {
         props: {
           initialProducts: [],
           categories: ['Todos los Productos'],
+        brands: ['Todas las marcas'],
         },
       };
     }
@@ -335,6 +584,7 @@ export async function getServerSideProps() {
         props: {
           initialProducts: [],
           categories: ['Todos los Productos'],
+        brands: ['Todas las marcas'],
         },
       };
     }
@@ -346,6 +596,7 @@ export async function getServerSideProps() {
         props: {
           initialProducts: [],
           categories: ['Todos los Productos'],
+        brands: ['Todas las marcas'],
         },
       };
     }
@@ -363,6 +614,7 @@ export async function getServerSideProps() {
         props: {
           initialProducts: [],
           categories: ['Todos los Productos'],
+        brands: ['Todas las marcas'],
         },
       };
     }
@@ -380,6 +632,26 @@ export async function getServerSideProps() {
       .sort((a, b) => categoryCounts[b] - categoryCounts[a]);
 
     const categories = ['Todos los Productos', ...sortedCategories];
+
+    // Calcular cantidad de productos por marca
+    const brandCounts = {};
+    let hasNoBrand = false;
+    products.forEach(product => {
+      const brand = (product.brand || '').trim();
+      if (!brand) {
+        hasNoBrand = true;
+        return;
+      }
+      brandCounts[brand] = (brandCounts[brand] || 0) + 1;
+    });
+
+    const sortedBrands = Object.keys(brandCounts)
+      .sort((a, b) => brandCounts[b] - brandCounts[a]);
+
+    const brands = ['Todas las marcas', ...sortedBrands];
+    if (hasNoBrand) {
+      brands.push('Sin marca');
+    }
     
     const productsWithParsedImages = products.map(p => {
       try {
@@ -402,6 +674,7 @@ export async function getServerSideProps() {
       props: {
         initialProducts: productsWithParsedImages,
         categories,
+        brands,
       },
     };
   } catch (error) {
@@ -410,6 +683,7 @@ export async function getServerSideProps() {
       props: {
         initialProducts: [],
         categories: ['Todos los Productos'],
+        brands: ['Todas las marcas'],
       },
     };
   }

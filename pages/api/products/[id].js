@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   const { id } = req.query;
 
   if (req.method === 'PUT') {
-    const { name, price, category, brand, buyLink, imageUrls } = req.body;
+    const { name, price, category, brand, buyLink, featured, imageUrls } = req.body;
     try {
       const { data: updatedProduct, error } = await supabase
         .from('products')
@@ -24,6 +24,7 @@ export default async function handler(req, res) {
           category,
           brand: brand || '',
           buyLink: buyLink || '',
+          featured: Boolean(featured),
           imageUrls: imageUrls
         })
         .eq('id', id)

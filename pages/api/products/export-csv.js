@@ -24,7 +24,7 @@ export default async function handler(req, res) {
     }
 
     // Crear el contenido CSV
-    const csvHeaders = ['name', 'price', 'category', 'brand', 'imageUrls', 'buyLink'];
+    const csvHeaders = ['name', 'price', 'category', 'brand', 'featured', 'imageUrls', 'buyLink'];
     const csvRows = [csvHeaders];
 
     products.forEach(product => {

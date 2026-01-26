@@ -118,11 +118,15 @@ export default async function handler(req, res) {
               continue; // Saltar este producto
             }
 
+            const featuredValue = String(product.featured || '').toLowerCase();
+            const isFeatured = featuredValue === 'true' || featuredValue === '1' || featuredValue === 'yes' || featuredValue === 'si';
+
             const productData = {
               name: product.name,
               price: processedPrice,
               category: product.category,
               brand: product.brand || '',
+              featured: isFeatured,
               imageUrls: imageUrlsJson,
               buyLink: product.buyLink || ''
             };

@@ -107,6 +107,7 @@ const AdminProductList = ({ products, onEdit, onDelete, onClearAll }) => {
                           <th className="p-5 font-semibold text-gray-300 uppercase text-sm tracking-wider">Marca</th>
                           <th className="p-5 font-semibold text-gray-300 uppercase text-sm tracking-wider">Categoría</th>
                           <th className="p-5 font-semibold text-gray-300 uppercase text-sm tracking-wider">Precio</th>
+                          <th className="p-5 font-semibold text-gray-300 uppercase text-sm tracking-wider">Destacado</th>
                           <th className="p-5 font-semibold text-gray-300 uppercase text-sm tracking-wider text-right">Acciones</th>
                       </tr>
                   </thead>
@@ -117,6 +118,18 @@ const AdminProductList = ({ products, onEdit, onDelete, onClearAll }) => {
                               <td className="p-5 text-gray-300 text-body">{product.brand}</td>
                               <td className="p-5 text-gray-300 text-body">{product.category}</td>
                               <td className="p-5 text-brand-white font-mono font-semibold">${product.price.toFixed(2)}</td>
+                              <td className="p-5 text-gray-300">
+                                {product.featured ? (
+                                  <span className="inline-flex items-center gap-1 text-orange-300 text-xs font-semibold">
+                                    <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                      <path d="M10.5 2.5c.2.8-.1 1.7-.7 2.3-.7.7-1.1 1.6-1.1 2.5 0 1.9 1.6 3.5 3.5 3.5.9 0 1.7-.3 2.3-.8-.1 2.8-2.4 5-5.2 5-2.9 0-5.3-2.4-5.3-5.3 0-2.6 1.6-4.9 3.8-6 0 .7.6 1.3 1.3 1.3.7 0 1.3-.6 1.3-1.3 0-1.4-.7-2.6-1.7-3.5 1.2-.2 2.6.4 3.8 1.5z" />
+                                    </svg>
+                                    Si
+                                  </span>
+                                ) : (
+                                  <span className="text-xs text-gray-500">No</span>
+                                )}
+                              </td>
                               <td className="p-5 text-right">
                                   <div className="flex items-center justify-end gap-4">
                                     <button 
