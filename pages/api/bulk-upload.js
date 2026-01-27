@@ -13,10 +13,11 @@ export const config = {
 };
 
 // Función para subir imagen a R2 con timeout
-const uploadImageToR2 = async (imageUrl, timeout = 10000) => {
+const uploadImageToR2 = async (imageUrl, timeout = 30000) => {
   return uploadRemoteImageToR2(imageUrl, {
     prefix: 'repse-ecommerce-bulk',
     timeoutMs: timeout,
+    retries: 2,
   });
 };
 
