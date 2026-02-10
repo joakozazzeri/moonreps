@@ -1,690 +1,203 @@
-// pages/index.js
-import { useState, useEffect, useMemo, useRef, useLayoutEffect } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Head from 'next/head';
-import Image from 'next/image';
-import Link from 'next/link';
-import CategoryFilter from '../components/CategoryFilter';
-import SearchBar from '../components/SearchBar';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
+import SearchBar from '../components/SearchBar';
+import CategoryFilter from '../components/CategoryFilter';
+import FilterMenu from '../components/FilterMenu';
 import Pagination from '../components/Pagination';
 import WelcomePopup from '../components/WelcomePopup';
+import CTAButtons from '../components/CTAButtons';
+import { supabase } from '../lib/supabase';
 
-export default function Home({ initialProducts, categories, brands }) {
-  const [products, setProducts] = useState(initialProducts);
+export default function Home({ initialProducts }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos los Productos');
-  const [selectedBrands, setSelectedBrands] = useState([]);
-  const [sortOrder, setSortOrder] = useState('default');
-  const [featuredOnly, setFeaturedOnly] = useState(false);
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [filterTab, setFilterTab] = useState('price');
   const [currentPage, setCurrentPage] = useState(1);
-  const resultsRef = useRef(null);
-  const productsPerPage = 25;
+  const productsPerPage = 12;
 
-  // Estado para el Lightbox
-  const [lightboxOpen, setLightboxOpen] = useState(false);
-  const [lightboxImages, setLightboxImages] = useState([]);
-  const [lightboxIndex, setLightboxIndex] = useState(0);
+  // -- Filtros Avanzados --
+  const [sortBy, setSortBy] = useState('none');
+  const [showFeatured, setShowFeatured] = useState(false);
+  const [selectedBrand, setSelectedBrand] = useState('Todas');
 
-  const openLightbox = (images, index) => {
-    setLightboxImages(images);
-    setLightboxIndex(index);
-    setLightboxOpen(true);
-  };
-
-  const closeLightbox = () => setLightboxOpen(false);
-  const nextLightboxImage = () => setLightboxIndex((prev) => (prev === lightboxImages.length - 1 ? 0 : prev + 1));
-  const prevLightboxImage = () => setLightboxIndex((prev) => (prev === 0 ? lightboxImages.length - 1 : prev - 1));
-
-  const normalizeBrand = (value) => {
-    return (value || '')
-      .replace(/​/g, '')
-      .replace(/\s+/g, ' ')
-      .trim()
-      .toLowerCase();
-  };
-
+  // -- Scroll to Top on Page Change --
   useEffect(() => {
-    let filtered = [...initialProducts];
-
-    if (selectedCategory !== 'Todos los Productos') {
-      filtered = filtered.filter(p => p.category === selectedCategory);
-    }
-
-    if (selectedBrands.length > 0) {
-      const lowerSelected = selectedBrands;
-      filtered = filtered.filter(p => {
-        const key = normalizeBrand(p.brand);
-        if (!key) {
-          return lowerSelected.includes('sin marca');
-        }
-        return lowerSelected.includes(key);
-      });
-    }
-
-    if (searchTerm) {
-      filtered = filtered.filter(p =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (featuredOnly) {
-      filtered = filtered.filter(p => Boolean(p.featured));
-    }
-
-    if (sortOrder === 'price_desc') {
-      filtered.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
-    } else if (sortOrder === 'price_asc') {
-      filtered.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
-    }
-    
-    setProducts(filtered);
-    setCurrentPage(1); // Resetear a la primera pagina cuando cambian los filtros
-  }, [searchTerm, selectedCategory, selectedBrands, sortOrder, featuredOnly, initialProducts]);
-
-              const availableBrands = useMemo(() => {
-    let base = [...initialProducts];
-
-    if (selectedCategory !== 'Todos los Productos') {
-      base = base.filter(p => p.category === selectedCategory);
-    }
-    if (searchTerm) {
-      base = base.filter(p =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    const counts = {};
-    const labelByKey = {};
-    let hasNoBrand = false;
-    base.forEach(product => {
-      const key = normalizeBrand(product.brand);
-      if (!key) {
-        hasNoBrand = true;
-        return;
-      }
-      if (!labelByKey[key]) {
-        labelByKey[key] = (product.brand || '').replace(/\s+/g, ' ').trim();
-      }
-      counts[key] = (counts[key] || 0) + 1;
-    });
-
-    const sortedKeys = Object.keys(counts).sort((a, b) => {
-      const la = labelByKey[a] || a;
-      const lb = labelByKey[b] || b;
-      return la.localeCompare(lb, 'es', { sensitivity: 'base' });
-    });
-
-    const list = sortedKeys.map((key) => ({ key, label: labelByKey[key] || key }));
-    if (hasNoBrand) {
-      list.push({ key: 'sin marca', label: 'Sin marca' });
-    }
-    return list;
-  }, [initialProducts, selectedCategory, searchTerm]);
-
-  useEffect(() => {
-    setSelectedBrands((prev) => prev.filter((b) => availableBrands.some((opt) => opt.key === b)));
-  }, [availableBrands]);
-
-
-  // Calcular productos para la página actual
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-  const totalPages = Math.ceil(products.length / productsPerPage);
-
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    // Scroll suave hacia arriba cuando cambia de página
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [currentPage]);
 
+  // -- Reset Page on Filter Change --
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory, searchTerm, sortBy, showFeatured, selectedBrand]);
 
-  const resetFilters = () => {
-    setSortOrder('default');
-    setSelectedBrands([]);
-    setFeaturedOnly(false);
-  };
+  // -- Lógica de Filtrado y Ordenamiento --
+  const filteredProducts = useMemo(() => {
+    let result = initialProducts.filter(product => {
+      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = selectedCategory === 'Todos los Productos' || product.category === selectedCategory;
+      const matchesBrand = selectedBrand === 'Todas' || product.brand === selectedBrand;
+      const matchesFeatured = showFeatured ? product.featured : true;
 
-  const toggleBrand = (brand) => {
-    setSelectedBrands((prev) => {
-      if (prev.includes(brand)) {
-        return prev.filter((b) => b != brand);
-      }
-      return [...prev, brand];
+      return matchesSearch && matchesCategory && matchesBrand && matchesFeatured;
     });
-  };
 
-  const clearBrands = () => setSelectedBrands([]);
+    if (sortBy === 'price-asc') {
+      result.sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-desc') {
+      result.sort((a, b) => b.price - a.price);
+    }
+
+    return result;
+  }, [initialProducts, searchTerm, selectedCategory, sortBy, showFeatured, selectedBrand]);
+
+  // -- Paginación --
+  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  const currentProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
+
+  // -- Datos para Filtros --
+  const categories = ['Todos los Productos', ...new Set(initialProducts.map(p => p.category).filter(Boolean))];
+  const brands = [...new Set(initialProducts.map(p => p.brand).filter(Boolean))];
 
   return (
-    <div className="bg-gray-900 min-h-screen text-white relative overflow-x-hidden" style={{ fontFamily: "'Poppins', sans-serif" }}>
-      {/* Popup de bienvenida */}
-      <WelcomePopup />
-      
-      {/* Diseño minimalista del fondo general */}
-      <div className="absolute inset-0 opacity-8 pointer-events-none">
-        {/* Patrón de puntos sutiles */}
-        <div className="absolute top-20 left-10 w-2 h-2 bg-blue-500/30 rounded-full"></div>
-        <div className="absolute top-40 right-20 w-1 h-1 bg-purple-500/40 rounded-full"></div>
-        <div className="absolute top-60 left-1/3 w-1.5 h-1.5 bg-blue-400/35 rounded-full"></div>
-        <div className="absolute top-80 right-1/4 w-1 h-1 bg-purple-400/30 rounded-full"></div>
-        <div className="absolute top-96 left-1/2 w-2 h-2 bg-blue-500/25 rounded-full"></div>
-        
-        <div className="absolute top-32 left-1/5 w-1 h-1 bg-purple-500/35 rounded-full"></div>
-        <div className="absolute top-48 right-1/3 w-1.5 h-1.5 bg-blue-400/30 rounded-full"></div>
-        <div className="absolute top-64 left-2/3 w-1 h-1 bg-purple-400/40 rounded-full"></div>
-        <div className="absolute top-80 right-1/2 w-2 h-2 bg-blue-500/20 rounded-full"></div>
-        
-        {/* Puntos adicionales para más densidad */}
-        <div className="absolute top-120 left-1/6 w-1 h-1 bg-blue-500/25 rounded-full"></div>
-        <div className="absolute top-140 right-1/5 w-1.5 h-1.5 bg-purple-500/30 rounded-full"></div>
-        <div className="absolute top-160 left-4/5 w-1 h-1 bg-blue-400/35 rounded-full"></div>
-        
-        {/* Líneas horizontales sutiles */}
-        <div className="absolute top-1/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-500/15 to-transparent"></div>
-        <div className="absolute top-1/2 left-0 right-0 h-px bg-gradient-to-r from-transparent via-purple-500/15 to-transparent"></div>
-        <div className="absolute top-3/4 left-0 right-0 h-px bg-gradient-to-r from-transparent via-blue-400/15 to-transparent"></div>
-        
-        {/* Líneas verticales sutiles */}
-        <div className="absolute top-0 bottom-0 left-1/4 w-px bg-gradient-to-b from-transparent via-blue-500/15 to-transparent"></div>
-        <div className="absolute top-0 bottom-0 left-1/2 w-px bg-gradient-to-b from-transparent via-purple-500/15 to-transparent"></div>
-        <div className="absolute top-0 bottom-0 left-3/4 w-px bg-gradient-to-b from-transparent via-blue-400/15 to-transparent"></div>
-        
-        {/* Círculos grandes y difuminados para profundidad */}
-        <div className="absolute top-1/3 left-1/6 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-1/3 right-1/6 w-40 h-40 bg-purple-500/5 rounded-full blur-3xl"></div>
-      </div>
+    <div className="min-h-screen bg-background text-white font-sans flex flex-col">
       <Head>
-        <title>Moon Reps - Spreadsheet</title>
-        <meta name="description" content="Ecommerce store built with Next.js" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+        <title>Moon Reps - Catálogo Premium</title>
+        <meta name="description" content="Encuentra las mejores réplicas con calidad garantizada." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <header className="border-b border-gray-700/50 backdrop-blur-sm bg-gray-900/80 sticky top-0 z-40">
-        <nav className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-          {/* Logo - siempre visible */}
-          <div className="flex items-center">
-            <Image src="/logo.png" alt="Repse Logo" width={120} height={48} className="object-contain hover:scale-105 transition-transform duration-200 sm:w-40" />
-          </div>
+      <WelcomePopup />
+      <Header />
 
-          {/* Botones - ocultos en móvil, visibles en desktop */}
+      <main className="flex-grow container mx-auto px-4 py-8 space-y-12">
 
-
-          <div className="flex items-center">
-            {/* Botón Productos - más pequeño en móvil */}
-            <button className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 bg-blue-500/40 backdrop-blur-sm border-2 border-blue-400/80 rounded-soft text-white shadow-lg shadow-blue-500/25 hover:bg-blue-500/50 hover:border-blue-400/90 hover:shadow-blue-500/40 transition-all duration-200 cursor-pointer">
-              <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-              </svg>
-              <span className="hidden sm:inline text-xs sm:text-sm font-semibold">Productos</span>
-            </button>
-
-            {/* Botón Vendedores */}
-            <Link href="/vendedores" className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 bg-gray-800/80 backdrop-blur-sm border border-gray-600/30 rounded-soft text-gray-300 hover:text-white hover:bg-blue-500/20 hover:border-blue-500/50 transition-all duration-200 cursor-pointer ml-2">
-              <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <span className="hidden sm:inline text-xs sm:text-sm font-semibold">Vendedores</span>
-            </Link>
-
-            {/* Botón Calculadora */}
-            <Link href="/calculadora" className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 bg-green-500/20 backdrop-blur-sm border border-green-500/50 rounded-soft text-green-300 hover:text-white hover:bg-green-500/30 hover:border-green-500/70 transition-all duration-200 cursor-pointer ml-2">
-              <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-              <span className="hidden sm:inline text-xs sm:text-sm font-semibold">Calculadora</span>
-            </Link>
-
-            {/* Botón Tutorial */}
-            <Link href="/tutorial" className="flex items-center gap-2 px-3 py-2 sm:px-5 sm:py-3 bg-orange-500/20 backdrop-blur-sm border border-orange-500/50 rounded-soft text-orange-300 hover:text-white hover:bg-orange-500/30 hover:border-orange-500/70 transition-all duration-200 cursor-pointer ml-2">
-              <svg className="w-4 h-4 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>
-              <span className="hidden sm:inline text-xs sm:text-sm font-semibold">Tutorial</span>
-            </Link>
-
-
-          </div>
-        </nav>
-      </header>
-
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 spacing-modern" style={{ overflowAnchor: 'none' }}>
-
-
-        <div className="mb-8 sm:mb-10 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-modern mb-3">
-            <span className="text-white">Bienvenido al Spreadsheet de </span>
-            <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent drop-shadow-[0_0_2px_rgba(59,130,246,0.8)] drop-shadow-[0_0_4px_rgba(59,130,246,0.6)] drop-shadow-[0_0_8px_rgba(59,130,246,0.4)]">Moon Reps</span>
+        {/* Hero Section */}
+        <section className="text-center space-y-6 max-w-4xl mx-auto mt-8 sm:mt-12">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-white font-display">
+            Bienvenido al <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-400 to-primary-600">Spreadsheet de Moon Reps</span>
           </h1>
-          <p className="text-gray-400 text-subtitle text-sm sm:text-base">Encuentra los mejores productos con calidad garantizada</p>
-        </div>
-
-        {/* Botones promocionales */}
-        <div className="mb-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <a 
-            href="https://ikako.vip/r/moonreps" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 border border-blue-500/30 rounded-modern text-white hover:from-blue-500 hover:via-purple-600 hover:to-blue-700 transition-all duración-200 cursor-pointer shadow-2xl hover:shadow-blue-500/25 backdrop-blur-sm"
-          >
-            <Image 
-              src="/kakobuy-logo.png" 
-              alt="Kakobuy Logo" 
-              width={28} 
-              height={28} 
-              className="w-7 h-7 object-contain"
-            />
-            <span className="text-base font-bold">¡Regístrate en Kakobuy y recibe +$410 en cupones!</span>
-          </a>
-
-          <a 
-            href="https://discord.gg/3UW8ZAAWrG" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-indigo-500 via-purple-600 to-indigo-700 border border-indigo-500/30 rounded-modern text-white hover:from-indigo-600 hover:via-purple-700 hover:to-indigo-800 transition-all duración-200 cursor-pointer shadow-2xl hover:shadow-indigo-500/25 backdrop-blur-sm"
-          >
-            <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z"/>
-            </svg>
-            <span className="text-base font-bold">Únete al Discord</span>
-          </a>
-        </div>
-
-        <CategoryFilter
-          categories={categories}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          products={products}
-          allProducts={initialProducts}
-        />
-
-        <div className="mt-6 mb-4 flex items-center justify-end relative z-20">
-          <button
-            type="button"
-            onClick={() => setFilterOpen((v) => !v)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-gray-900/90 border border-gray-700/60 rounded-soft text-gray-200 hover:text-white hover:bg-gray-800/90 hover:border-gray-500/70 transition-all duration-200 shadow-lg shadow-black/30 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/40"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M7 12h10m-7 6h4" />
-            </svg>
-            <span className="text-sm font-semibold">Filtros</span>
-          </button>
-
-          {filterOpen && (
-            <div className="absolute right-0 top-full mt-2 w-[320px] sm:w-[360px] z-50">
-              <div className="bg-gray-950/90 border border-gray-700/60 rounded-modern p-4 backdrop-blur-sm shadow-2xl shadow-black/40 filter-panel-enter">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-2 text-gray-200">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2a1 1 0 01-.293.707L15 12.414V19a1 1 0 01-1.447.894l-4-2A1 1 0 019 17v-4.586L3.293 6.707A1 1 0 013 6V4z" />
-                  </svg>
-                  <span className="text-sm font-semibold">Filtros</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={resetFilters}
-                  className="text-xs text-gray-400 hover:text-gray-200"
-                >
-                  Restablecer todo
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between gap-4 text-sm mb-4 border-b border-gray-800">
-                <div className="flex items-center gap-4">
-                <button
-                  type="button"
-                  onClick={() => setFilterTab('price')}
-                  className={`pb-3 px-1 border-b-2 ${filterTab === 'price' ? 'border-orange-400 text-white' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v12m4-9h-5a3 3 0 000 6h2a3 3 0 010 6H8" />
-                    </svg>
-                    <span>Precio</span>
-                  </span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFilterTab('brands')}
-                  className={`pb-3 px-1 border-b-2 ${filterTab === 'brands' ? 'border-orange-400 text-white' : 'border-transparent text-gray-400 hover:text-gray-200'}`}
-                >
-                  <span className="inline-flex items-center gap-2">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h10l3 5-8 9-8-9 3-5z" />
-                    </svg>
-                    <span>Marcas</span>
-                  </span>
-                </button>
-                </div>
-                <label className="flex items-center gap-2 text-xs text-gray-300 pb-3 cursor-pointer select-none">
-                  <input
-                    type="checkbox"
-                    checked={featuredOnly}
-                    onChange={(e) => setFeaturedOnly(e.target.checked)}
-                    className="peer sr-only"
-                  />
-                  <span className="inline-flex items-center justify-center w-4 h-4 rounded border border-orange-300/60 bg-gray-900/80 text-orange-200 transition-all duration-200 peer-checked:border-orange-400 peer-checked:bg-orange-500/20">
-                    <svg className="w-3 h-3 opacity-0 peer-checked:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                    </svg>
-                  </span>
-                  <span>Solo destacados</span>
-                </label>
-              </div>
-
-              {filterTab === 'price' && (
-                <div>
-                  <p className="text-xs text-gray-400 mb-3">Ordenar por Precio</p>
-                  <div className="grid grid-cols-3 gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setSortOrder('default')}
-                      className={`flex flex-col items-center justify-center gap-1 text-xs sm:text-sm px-3 py-3 rounded-soft border ${sortOrder === 'default' ? 'border-orange-400/70 bg-orange-500/10 text-white' : 'border-gray-800 bg-gray-900/80 text-gray-300 hover:border-gray-600 hover:bg-gray-900/95 hover:-translate-y-0.5 transition-all duration-200'}`}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12l4 4 10-10" />
-                      </svg>
-                      Ninguno
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSortOrder('price_asc')}
-                      className={`flex flex-col items-center justify-center gap-1 text-xs sm:text-sm px-3 py-3 rounded-soft border ${sortOrder === 'price_asc' ? 'border-orange-400/70 bg-orange-500/10 text-white' : 'border-gray-800 bg-gray-900/80 text-gray-300 hover:border-gray-600 hover:bg-gray-900/95 hover:-translate-y-0.5 transition-all duration-200'}`}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 17l5-5 5 5M12 12V7" />
-                      </svg>
-                      Menor a Mayor
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSortOrder('price_desc')}
-                      className={`flex flex-col items-center justify-center gap-1 text-xs sm:text-sm px-3 py-3 rounded-soft border ${sortOrder === 'price_desc' ? 'border-orange-400/70 bg-orange-500/10 text-white' : 'border-gray-800 bg-gray-900/80 text-gray-300 hover:border-gray-600 hover:bg-gray-900/95 hover:-translate-y-0.5 transition-all duration-200'}`}
-                    >
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7l5 5 5-5M12 12v5" />
-                      </svg>
-                      Mayor a Menor
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {filterTab === 'brands' && (
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-xs text-gray-400">Selecciona una o varias marcas</p>
-                    <button
-                      type="button"
-                      onClick={clearBrands}
-                      className="text-xs text-orange-300 hover:text-orange-200"
-                    >
-                      Limpiar
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto pr-1">
-                    {(availableBrands || []).map((brand) => (
-                      <label key={brand.key} className="flex items-center gap-2 text-xs sm:text-sm text-gray-200 bg-gray-900/80 border border-gray-800 rounded-soft px-2.5 py-2 cursor-pointer hover:border-orange-400/40 hover:bg-gray-900 transition-all duration-200">
-                        <input
-                          type="checkbox"
-                          checked={selectedBrands.includes(brand.key)}
-                          onChange={() => toggleBrand(brand.key)}
-                          className="peer sr-only"
-                        />
-                        <span className="inline-flex items-center justify-center w-4 h-4 rounded border border-gray-600 bg-gray-800/80 text-orange-300 transition-all duration-200 peer-checked:border-orange-400 peer-checked:bg-orange-500/20">
-                          <svg className="w-3 h-3 opacity-0 peer-checked:opacity-100" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
-                          </svg>
-                        </span>
-                        <span className="truncate">{brand.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-          )}
-        </div>
-
-        <div className="my-6 sm:my-10">
-          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        </div>
-
-        <div ref={resultsRef} className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 sm:mb-10 gap-2">
-          <p className="text-gray-400 text-base sm:text-lg text-center sm:text-left">
-            Mostrando {currentProducts.length} de {products.length} productos
-            {totalPages > 1 && ` (Página ${currentPage} de ${totalPages})`}
+          <p className="text-zinc-400 text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed">
+            Seleccionamos manualmente lo mejor en calidad para que tus compras en Kakobuy sean rápidas y seguras.
           </p>
-          <div className="flex items-center justify-center sm:justify-end gap-2 text-gray-400">
-            <svg className="w-4 h-4 sm:w-5 sm:h-5 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-            </svg>
-            <span className="text-xs sm:text-sm font-medium text-subtitle">Catálogo</span>
-          </div>
-        </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6 lg:gap-8">
-          {currentProducts.map((product, index) => (
-            <ProductCard 
-              key={product.id} 
-              product={product}
-              priority={index < 5}
+          <CTAButtons />
+        </section>
+
+        {/* Filters & Search - Sticky Header */}
+        <section className="sticky top-16 z-30 bg-background/95 backdrop-blur-xl py-4 -mx-4 px-4 border-b border-surface-800/50 space-y-4">
+          <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <CategoryFilter
+              categories={categories}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              products={filteredProducts} // Pasar filtered para que los contadores sean dinámicos
+              allProducts={initialProducts}
             />
-          ))}
-        </div>
 
-        {products.length === 0 && (
-          <div className="text-center py-16">
-            <div className="text-gray-400 mb-6">
-              <svg className="w-20 h-20 mx-auto mb-6 icon-modern" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <h3 className="text-2xl font-semibold text-gray-300 mb-3 text-modern">No se encontraron productos</h3>
-            <p className="text-gray-500 text-lg">Intenta ajustar tus filtros de búsqueda</p>
+            <FilterMenu
+              onSortChange={setSortBy}
+              onFilterChange={(key, val) => key === 'featured' && setShowFeatured(val)}
+              onBrandChange={setSelectedBrand}
+              availableBrands={brands}
+              activeFilters={{ sortBy, showFeatured, selectedBrand }}
+            />
           </div>
-        )}
+        </section>
 
-        {/* Paginación */}
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
-        )}
+        {/* Product Grid */}
+        <section className="min-h-[500px]">
+          {filteredProducts.length > 0 ? (
+            <div
+              key={currentPage}
+              className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 animate-fadeIn"
+            >
+              {currentProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-20 bg-surface-900/50 rounded-3xl border border-surface-800 border-dashed">
+              <p className="text-zinc-500 text-lg">No se encontraron productos que coincidan con tu búsqueda.</p>
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setSelectedCategory('Todos los Productos');
+                  setSortBy('none');
+                  setShowFeatured(false);
+                  setSelectedBrand('Todas');
+                }}
+                className="mt-4 text-primary-400 hover:text-primary-300 font-medium"
+              >
+                Limpiar todos los filtros
+              </button>
+            </div>
+          )}
+
+          {filteredProducts.length > 0 && (
+            <div className="mt-12">
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </div>
+          )}
+        </section>
+
       </main>
 
-      {lightboxOpen && (
-        <div 
-          className="fixed inset-0 bg-black/95 backdrop-blur-sm flex items-center justify-center z-50"
-          onClick={closeLightbox}
-        >
-          <button 
-            className="absolute top-6 right-6 text-white text-4xl hover:text-gray-300 cursor-pointer bg-black/50 rounded-full p-3 hover:bg-black/70 transition-all duration-200 icon-modern"
-            onClick={closeLightbox}
-          >
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-          {lightboxImages.length > 1 && (
-            <>
-              <button 
-                className="absolute left-6 sm:left-10 text-white text-4xl hover:text-gray-300 p-3 cursor-pointer bg-black/50 rounded-full hover:bg-black/70 transition-all duration-200 icon-modern"
-                onClick={(e) => { e.stopPropagation(); prevLightboxImage(); }}
-              >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button 
-                className="absolute right-6 sm:right-10 text-white text-4xl hover:text-gray-300 p-3 cursor-pointer bg-black/50 rounded-full hover:bg-black/70 transition-all duration-200 icon-modern"
-                onClick={(e) => { e.stopPropagation(); nextLightboxImage(); }}
-              >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            </>
-          )}
-          <div className="relative w-full h-full max-w-4xl max-h-[90vh] p-4" onClick={(e) => e.stopPropagation()}>
-            <Image 
-              src={lightboxImages[lightboxIndex]}
-              alt="Lightbox image"
-              fill
-              sizes="100vw"
-              className="object-contain"
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Footer */}
-      <footer className="text-center py-6 mt-12">
-        <p className="text-gray-400 text-sm">
-          <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">© 2025 </span>
-          <span className="bg-gradient-to-r from-blue-400 via-purple-500 to-blue-600 bg-clip-text text-transparent">Moon Reps</span>
-          <span className="text-gray-400"> • Todos los derechos reservados</span>
-        </p>
-      </footer>
+      <Footer />
     </div>
   );
 }
 
 export async function getServerSideProps() {
-  try {
-    const { supabase, isSupabaseConfigured } = require('../lib/supabase');
-    
-    // Si Supabase no está configurado, devolver datos vacíos
-    if (!isSupabaseConfigured || !supabase) {
-      console.warn('Supabase not configured, returning empty data');
-      return {
-        props: {
-          initialProducts: [],
-          categories: ['Todos los Productos'],
-        brands: ['Todas las marcas'],
-        },
-      };
-    }
-    
-    // Obtener productos ordenados por fecha de creación (más recientes primero)
-    const { data: products, error: productsError } = await supabase
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: false });
-    
-    if (productsError) {
-      console.error('Error fetching products:', productsError);
-      return {
-        props: {
-          initialProducts: [],
-          categories: ['Todos los Productos'],
-        brands: ['Todas las marcas'],
-        },
-      };
-    }
-    
-    // Verificar que products sea un array
-    if (!Array.isArray(products)) {
-      console.warn('Products is not an array');
-      return {
-        props: {
-          initialProducts: [],
-          categories: ['Todos los Productos'],
-        brands: ['Todas las marcas'],
-        },
-      };
-    }
-    
-    // Obtener categorías únicas
-    const { data: categoriesResult, error: categoriesError } = await supabase
-      .from('products')
-      .select('category')
-      .not('category', 'is', null)
-      .neq('category', '');
-    
-    if (categoriesError) {
-      console.error('Error fetching categories:', categoriesError);
-      return {
-        props: {
-          initialProducts: [],
-          categories: ['Todos los Productos'],
-        brands: ['Todas las marcas'],
-        },
-      };
-    }
-    
-    // Calcular cantidad de productos por categoría
-    const categoryCounts = {};
-    products.forEach(product => {
-      if (product.category) {
-        categoryCounts[product.category] = (categoryCounts[product.category] || 0) + 1;
-      }
-    });
+  const { data: products, error } = await supabase
+    .from('products')
+    .select('*')
+    .order('created_at', { ascending: false });
 
-    // Ordenar categorías por cantidad de productos (de mayor a menor)
-    const sortedCategories = Object.keys(categoryCounts)
-      .sort((a, b) => categoryCounts[b] - categoryCounts[a]);
-
-    const categories = ['Todos los Productos', ...sortedCategories];
-
-    // Calcular cantidad de productos por marca
-    const brandCounts = {};
-    let hasNoBrand = false;
-    products.forEach(product => {
-      const brand = (product.brand || '').trim();
-      if (!brand) {
-        hasNoBrand = true;
-        return;
-      }
-      brandCounts[brand] = (brandCounts[brand] || 0) + 1;
-    });
-
-    const sortedBrands = Object.keys(brandCounts)
-      .sort((a, b) => brandCounts[b] - brandCounts[a]);
-
-    const brands = ['Todas las marcas', ...sortedBrands];
-    if (hasNoBrand) {
-      brands.push('Sin marca');
-    }
-    
-    const productsWithParsedImages = products.map(p => {
-      try {
-        const imageUrls = Array.isArray(p.imageUrls) ? p.imageUrls : JSON.parse(p.imageUrls || '[]');
-        return {
-          ...p,
-          // Mantener todas las imágenes pero optimizar el payload
-          imageUrls: imageUrls
-        };
-      } catch (error) {
-        console.error('Error parsing imageUrls for product:', p.id, error);
-        return {
-          ...p,
-          imageUrls: []
-        };
-      }
-    });
-
-    return {
-      props: {
-        initialProducts: productsWithParsedImages,
-        categories,
-        brands,
-      },
-    };
-  } catch (error) {
-    console.error("Error in getServerSideProps:", error);
-    return {
-      props: {
-        initialProducts: [],
-        categories: ['Todos los Productos'],
-        brands: ['Todas las marcas'],
-      },
-    };
+  if (error) {
+    console.error("Error fetching products:", error);
+    return { props: { initialProducts: [] } };
   }
+
+  // Transformar datos si es necesario (ej: asegurar imageUrls es array)
+  const processedProducts = products.map(p => {
+    let images = [];
+    if (typeof p.imageUrls === 'string') {
+      try {
+        images = JSON.parse(p.imageUrls);
+        if (!Array.isArray(images)) images = [images];
+      } catch (e) {
+        images = [p.imageUrls];
+      }
+    } else if (Array.isArray(p.imageUrls)) {
+      images = p.imageUrls;
+    } else if (p.imageUrls) {
+      images = [p.imageUrls];
+    } else if (p.image_url) {
+      // Fallback for legacy column if it exists
+      images = Array.isArray(p.image_url) ? p.image_url : [p.image_url];
+    }
+
+    return {
+      ...p,
+      imageUrls: images.filter(Boolean)
+    };
+  });
+
+  return {
+    props: {
+      initialProducts: processedProducts,
+    },
+  };
 }
