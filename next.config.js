@@ -1,10 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  eslint: {
-    // Deshabilitar ESLint durante el build para evitar errores
-    ignoreDuringBuilds: true,
-  },
   images: {
     remotePatterns: [
       {
@@ -19,10 +15,9 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
-      // AÑADIDO: Dominio de Cloudinary (legacy)
       {
         protocol: 'https',
-        hostname: 'res.cloudinary.com',
+        hostname: 'eyndkikcpkleqpvqiogr.supabase.co',
         port: '',
         pathname: '/**',
       },
@@ -32,11 +27,28 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'imgur.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.imgur.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
-    // Ya no necesitamos SVG, pero lo dejamos por si acaso
-    dangerouslyAllowSVG: true, 
-    // Deshabilitar optimización para ahorrar ancho de banda de Vercel
+    // SVG is no longer needed, but we leave it just in case
+    dangerouslyAllowSVG: true,
+    // Disable optimization to save Vercel bandwidth
     unoptimized: true,
+  },
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: true,
   },
 }
 
