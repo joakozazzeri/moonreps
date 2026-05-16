@@ -4,15 +4,15 @@ export default function WelcomePopup() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const hasSeenPopup = localStorage.getItem('hasSeenWelcomePopup');
-    if (!hasSeenPopup) {
-      setIsOpen(true);
+    if (!sessionStorage.getItem('seenWelcome')) {
+      const timer = setTimeout(() => setIsOpen(true), 350);
+      return () => clearTimeout(timer);
     }
   }, []);
 
   const handleClose = () => {
+    sessionStorage.setItem('seenWelcome', '1');
     setIsOpen(false);
-    localStorage.setItem('hasSeenWelcomePopup', 'true');
   };
 
   const handleDiscord = () => {
@@ -47,7 +47,7 @@ export default function WelcomePopup() {
         <div className="text-center space-y-6">
           <div className="space-y-2">
             <h2 className="text-2xl font-bold text-white font-display">
-              Bienvenido a <span className="text-primary-500">Moon Reps</span>
+              Bienvenido a <span style={{ color: '#8ab4f8' }}>Moon Reps</span>
             </h2>
             <p className="text-zinc-400 text-sm">
               Tu puerta de entrada a las mejores réplicas de calidad.
