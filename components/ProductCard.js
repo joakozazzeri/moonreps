@@ -32,9 +32,9 @@ export default function ProductCard({ product, priority = false }) {
 
       {/* Featured Badge */}
       {product.featured && (
-        <div className="absolute top-3 left-3 z-10">
+        <div className="absolute top-2 left-2 sm:top-3 sm:left-3 z-10">
           <div
-            className="glow-pulse inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold"
+            className="glow-pulse inline-flex items-center gap-1 sm:gap-1.5 px-1.5 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-bold"
             style={{
               background: '#001845',
               border: '1px solid rgba(61,123,255,0.35)',
@@ -60,7 +60,7 @@ export default function ProductCard({ product, priority = false }) {
             src={images[currentImageIndex]}
             alt={product.name}
             fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
             className={`object-cover transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
             priority={priority}
             onLoad={() => setImageLoaded(true)}
@@ -111,26 +111,26 @@ export default function ProductCard({ product, priority = false }) {
       </div>
 
       {/* ── Contenido ── */}
-      <div className="px-4 pt-3 pb-4 flex flex-col flex-grow">
+      <div className="px-2 pt-2 pb-3 sm:px-4 sm:pt-3 sm:pb-4 flex flex-col flex-grow">
 
         {/* Nombre + marca */}
-        <div className="flex-grow mb-3">
+        <div className="flex-grow mb-2 sm:mb-3">
           {product.brand && (
             <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-medium mb-1 truncate">
               {product.brand}
             </p>
           )}
-          <h3 className="font-medium text-zinc-100 text-sm line-clamp-2 leading-snug" title={product.name}>
+          <h3 className="font-medium text-zinc-100 text-xs sm:text-sm line-clamp-2 leading-snug" title={product.name}>
             {product.name}
           </h3>
         </div>
 
         {/* Precio */}
-        <div className="flex items-baseline gap-1.5 mb-3">
+        <div className="flex items-baseline gap-1 sm:gap-1.5 mb-2 sm:mb-3">
           {product.price ? (
             <>
-              <span className="text-[11px] font-medium text-zinc-500 leading-none">USD</span>
-              <span className="text-xl font-bold text-white tabular-nums leading-none">
+              <span className="text-[10px] sm:text-[11px] font-medium text-zinc-500 leading-none">USD</span>
+              <span className="text-base sm:text-xl font-bold text-white tabular-nums leading-none">
                 {Number(product.price).toFixed(2)}
               </span>
             </>
@@ -140,7 +140,7 @@ export default function ProductCard({ product, priority = false }) {
         </div>
 
         {/* Separador */}
-        <div className="h-px mb-3" style={{ background: 'rgba(255,255,255,0.05)' }} />
+        <div className="h-px mb-2 sm:mb-3" style={{ background: 'rgba(255,255,255,0.05)' }} />
 
         {/* Botones */}
         <div className="space-y-1.5">
@@ -148,9 +148,9 @@ export default function ProductCard({ product, priority = false }) {
             href={product.buyLink || '#'}
             target="_blank"
             rel="noopener noreferrer"
-            className={`relative overflow-hidden btn btn-primary w-full py-2.5 text-sm gap-2 ${!product.buyLink && 'opacity-50 cursor-not-allowed'}`}
+            className={`relative overflow-hidden btn btn-primary w-full py-2 sm:py-2.5 text-xs sm:text-sm gap-1.5 sm:gap-2 ${!product.buyLink && 'opacity-50 cursor-not-allowed'}`}
           >
-            <svg className="w-3.5 h-3.5 flex-shrink-0 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 flex-shrink-0 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 9H4l1-9z" />
             </svg>
             <span className="relative z-10">Comprar</span>
